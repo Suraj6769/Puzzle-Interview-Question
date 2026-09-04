@@ -1,0 +1,6 @@
+{
+  "name": "PuzzleMaster: Interview Edition",
+  "description": "Interactive puzzle game with working simulations for top tech interview puzzles asked at FAANG, Microsoft, and Google.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
