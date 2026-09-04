@@ -14,8 +14,11 @@ import {
   Building2,
   Tag,
   ShieldCheck,
+  Volume2,
+  VolumeX,
 } from 'lucide-react';
 import { PuzzleMeta, PuzzleProgress } from '../types';
+import { sound } from '../utils/audio';
 
 // Demos
 import { WaterJugDemo } from './demos/WaterJugDemo';
@@ -38,6 +41,11 @@ import { PoisonRatDemo } from './demos/PoisonRatDemo';
 import { MatchstickDemo } from './demos/MatchstickDemo';
 import { CoinTableDemo } from './demos/CoinTableDemo';
 import { NineDotsDemo } from './demos/NineDotsDemo';
+import { RiverCrossingDemo } from './demos/RiverCrossingDemo';
+import { BalanceScaleDemo } from './demos/BalanceScaleDemo';
+import { BurningRopesDemo } from './demos/BurningRopesDemo';
+import { TowerOfHanoiDemo } from './demos/TowerOfHanoiDemo';
+import { HundredDoorsDemo } from './demos/HundredDoorsDemo';
 
 interface Props {
   puzzle: PuzzleMeta;
@@ -60,6 +68,7 @@ export const PuzzlePlayScreen: React.FC<Props> = ({
   const [earnedStars, setEarnedStars] = useState<number>(0);
   const [sessionMoves, setSessionMoves] = useState<number>(0);
   const [timerSeconds, setTimerSeconds] = useState<number>(0);
+  const [isMuted, setIsMuted] = useState<boolean>(() => sound.isMuted());
 
   // Timer
   useEffect(() => {
@@ -75,8 +84,19 @@ export const PuzzlePlayScreen: React.FC<Props> = ({
     return `${m}:${s < 10 ? '0' : ''}${s}`;
   };
 
+  const handleToggleMute = () => {
+    const next = sound.toggleMute();
+    setIsMuted(next);
+  };
+
+  const handleSwitchTab = (tab: 'demo' | 'hints' | 'solution' | 'code') => {
+    sound.playClick();
+    setActiveTab(tab);
+  };
+
   const handleRevealHint = (index: number) => {
     if (!revealedHints.includes(index)) {
+      sound.playHint();
       setRevealedHints(prev => [...prev, index]);
     }
   };
@@ -94,7 +114,8 @@ export const PuzzlePlayScreen: React.FC<Props> = ({
     // Save progress
     onSaveProgress(puzzle.id, finalStars, revealedHints.length, moves);
 
-    // Trigger celebration confetti
+    // Trigger sound & celebration confetti
+    sound.playSuccess();
     confetti({
       particleCount: 80,
       spread: 70,
@@ -139,12 +160,24 @@ export const PuzzlePlayScreen: React.FC<Props> = ({
         return <CamelBananaDemo onSolved={handleSolved} />;
       case 'poison-rat':
         return <PoisonRatDemo onSolved={handleSolved} />;
+      case 'matchstick-squares':
       case 'matchstick-puzzle':
         return <MatchstickDemo onSolved={handleSolved} />;
+      case 'round-table-coins':
       case 'coin-table':
         return <CoinTableDemo onSolved={handleSolved} />;
       case 'nine-dots':
         return <NineDotsDemo onSolved={handleSolved} />;
+      case 'river-crossing':
+        return <RiverCrossingDemo onSolved={handleSolved} />;
+      case 'balance-scale':
+        return <BalanceScaleDemo onSolved={handleSolved} />;
+      case 'burning-ropes':
+        return <BurningRopesDemo onSolved={handleSolved} />;
+      case 'tower-of-hanoi':
+        return <TowerOfHanoiDemo onSolved={handleSolved} />;
+      case 'hundred-doors':
+        return <HundredDoorsDemo onSolved={handleSolved} />;
       default:
         return <div>Demo loading...</div>;
     }
@@ -201,6 +234,15 @@ export const PuzzlePlayScreen: React.FC<Props> = ({
           </div>
 
           <div className="flex items-center gap-3 sm:gap-4">
+            {/* Audio Mute Toggle */}
+            <button
+              onClick={handleToggleMute}
+              title={isMuted ? 'Unmute SFX' : 'Mute SFX'}
+              className="p-1.5 rounded-full bg-slate-800/50 hover:bg-slate-800 border border-slate-700 text-slate-400 hover:text-white transition"
+            >
+              {isMuted ? <VolumeX className="w-3.5 h-3.5 text-rose-400" /> : <Volume2 className="w-3.5 h-3.5 text-indigo-400" />}
+            </button>
+
             {/* Timer Pill */}
             <div className="flex items-center space-x-2 bg-slate-800/50 px-3 py-1 rounded-full border border-slate-700 text-xs font-mono text-slate-300">
               <Clock className="w-3.5 h-3.5 text-indigo-400" />
@@ -252,7 +294,7 @@ export const PuzzlePlayScreen: React.FC<Props> = ({
         {/* Navigation Tabs */}
         <div className="flex items-center gap-2 border-b border-slate-800 pb-2 overflow-x-auto scrollbar-none">
           <button
-            onClick={() => setActiveTab('demo')}
+            onClick={() => handleSwitchTab('demo')}
             className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition whitespace-nowrap ${
               activeTab === 'demo'
                 ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/20'
@@ -264,7 +306,7 @@ export const PuzzlePlayScreen: React.FC<Props> = ({
           </button>
 
           <button
-            onClick={() => setActiveTab('hints')}
+            onClick={() => handleSwitchTab('hints')}
             className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition relative whitespace-nowrap ${
               activeTab === 'hints'
                 ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/20'
@@ -276,7 +318,7 @@ export const PuzzlePlayScreen: React.FC<Props> = ({
           </button>
 
           <button
-            onClick={() => setActiveTab('solution')}
+            onClick={() => handleSwitchTab('solution')}
             className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition whitespace-nowrap ${
               activeTab === 'solution'
                 ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/20'
@@ -288,7 +330,7 @@ export const PuzzlePlayScreen: React.FC<Props> = ({
           </button>
 
           <button
-            onClick={() => setActiveTab('code')}
+            onClick={() => handleSwitchTab('code')}
             className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition whitespace-nowrap ${
               activeTab === 'code'
                 ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/20'

@@ -414,5 +414,105 @@ export const PUZZLES: PuzzleMeta[] = [
       'Start at a corner (e.g. bottom-left). Line 1: Go up through 3 dots and continue 1 unit past the top-left dot. Line 2: Cut diagonally down through the top-center and middle-right dots, extending 1 unit past the bottom-right. Line 3: Go horizontally left through the bottom 3 dots. Line 4: Cut diagonally up through the center dot to hit the top-right dot! All 9 dots connected in 4 continuous lines!',
     interviewTip:
       'Unconstrained assumption busting: The artificial boundary of the 3x3 square exists only in psychological perception, not in the problem rules.'
+  },
+  {
+    id: 'river-crossing',
+    number: 21,
+    name: 'River Crossing (Wolf, Goat & Cabbage)',
+    category: 'logical',
+    companies: ['Google', 'Amazon', 'Microsoft'],
+    difficulty: 'Medium',
+    icon: '🛶',
+    problemStatement:
+      'A farmer needs to transport a wolf, a goat, and a head of cabbage across a river in a small rowboat. The boat is only big enough to carry the farmer and at most ONE of the three items at a time. If left unattended together without the farmer, the wolf will eat the goat, and the goat will eat the cabbage. How can the farmer transport all three safely to the opposite bank in the fewest crossings?',
+    hints: [
+      'Which item can be left alone safely with the wolf? The cabbage! And which item cannot be left alone with either? The goat!',
+      'The goat must be taken across first, leaving the wolf and cabbage safely on the starting bank.',
+      'On crossing 3, after taking the cabbage (or wolf) across, the farmer MUST take the goat back in the boat to the starting bank!'
+    ],
+    explanation:
+      'Optimal 7-step sequence:\n1. Farmer takes Goat across (Left: Wolf, Cabbage | Right: Goat).\n2. Farmer returns alone (Left: Farmer, Wolf, Cabbage | Right: Goat).\n3. Farmer takes Cabbage across (Left: Wolf | Right: Goat, Cabbage).\n4. Farmer brings Goat back! (Left: Farmer, Wolf, Goat | Right: Cabbage).\n5. Farmer takes Wolf across (Left: Goat | Right: Wolf, Cabbage).\n6. Farmer returns alone (Left: Farmer, Goat | Right: Wolf, Cabbage).\n7. Farmer takes Goat across! All 3 safe on the right bank!',
+    interviewTip:
+      'State-space graph search & Backtracking: Each safe state can be represented as a node in a graph. The key breakthrough is recognizing that optimal paths may require reversing an earlier action (taking the goat back) to maintain invariance.'
+  },
+  {
+    id: 'balance-scale',
+    number: 22,
+    name: 'Counterfeit Coin & Balance Scale',
+    category: 'math',
+    companies: ['Goldman Sachs', 'Microsoft', 'Palantir'],
+    difficulty: 'Hard',
+    icon: '⚖️',
+    problemStatement:
+      'You are given 9 coins that look identical, but exactly one is counterfeit and is slightly HEAVIER than the other 8 genuine coins of equal weight. You have a two-pan balance scale with no weights. What is the minimum number of weighings required to guarantee finding the counterfeit coin?',
+    hints: [
+      'A balance scale has 3 possible outcomes for each weighing: Left pan tilts down, Right pan tilts down, or Both pans stay balanced.',
+      'Because each weighing yields 3 outcomes, each weighing can divide the search space by a factor of 3 (base 3 / ternary search).',
+      'Split the 9 coins into 3 groups of 3 coins: A = {1, 2, 3}, B = {4, 5, 6}, C = {7, 8, 9}. Weigh A against B!'
+    ],
+    explanation:
+      'Exactly 2 weighings are guaranteed!\n\nWeighing 1: Weigh {1, 2, 3} vs {4, 5, 6}.\n• If Left tilts down, fake coin is in {1, 2, 3}.\n• If Right tilts down, fake coin is in {4, 5, 6}.\n• If Balanced, fake coin is in {7, 8, 9}.\n\nWeighing 2: Take the 3 suspect coins (say {1, 2, 3}). Weigh Coin 1 vs Coin 2.\n• If Left tilts down, Coin 1 is fake.\n• If Right tilts down, Coin 2 is fake.\n• If Balanced, Coin 3 is fake!\n\nIn information theory: 3^k >= N. With k = 2 weighings, 3^2 = 9 outcomes, which matches 9 coins perfectly.',
+    interviewTip:
+      'Ternary Search & Decision Trees: Rather than binary splitting (halving), interviewers expect you to realize a pan scale has 3 states (<, =, >), making ternary division optimal.'
+  },
+  {
+    id: 'burning-ropes',
+    number: 23,
+    name: 'Burning Ropes (Measure 45 Min)',
+    category: 'logical',
+    companies: ['Google', 'Bloomberg', 'Apple'],
+    difficulty: 'Medium',
+    icon: '🔥',
+    problemStatement:
+      'You are given two ropes of varying lengths and thicknesses. Each rope takes exactly 60 minutes to burn completely from one end to the other, but neither burns at a uniform rate (e.g. 90% of a rope might burn in the first 10 minutes). You have a lighter but no clock or stopwatch. How can you measure exactly 45 minutes?',
+    hints: [
+      'If you light a rope from BOTH ends simultaneously, it will burn out in exactly half the time (30 minutes), regardless of uneven thickness!',
+      'Notice that 45 minutes = 30 minutes + 15 minutes.',
+      'How can you get 15 minutes out of the second rope? By having it already burned for 30 minutes, leaving 30 minutes worth of fuel, and then lighting its other end!'
+    ],
+    explanation:
+      'Step 1: Light Rope 1 from BOTH ends (A and B). At the exact same moment, light Rope 2 from ONE end (C).\n\nStep 2: Rope 1 burns from both ends and extinguishes completely in exactly 30 minutes! At that instant, exactly 30 minutes have elapsed, and Rope 2 has exactly 30 minutes of burn time remaining.\n\nStep 3: The moment Rope 1 burns out, immediately light the OTHER end of Rope 2 (D)!\n\nStep 4: Since Rope 2 is now burning from both ends, its remaining 30 minutes of fuel burns in 15 minutes. When Rope 2 completely extinguishes, exactly 30 + 15 = 45 minutes have elapsed!',
+    interviewTip:
+      'Boundary invariants & Non-uniform integration: Even when the density function is unknown, lighting both ends doubles the instantaneous burn rate ∫(v1 + v2) dt = L, halving total duration unconditionally.'
+  },
+  {
+    id: 'tower-of-hanoi',
+    number: 24,
+    name: 'Tower of Hanoi',
+    category: 'arrangement',
+    companies: ['Microsoft', 'Amazon', 'Cisco'],
+    difficulty: 'Medium',
+    icon: '🗼',
+    problemStatement:
+      'You have 3 rods (A, B, C) and n disks of different sizes stacked on Rod A in order of decreasing size (smallest on top). You must move the entire stack to Rod C following two rules: 1) You can move only one disk at a time. 2) No larger disk may ever be placed on top of a smaller disk. What is the minimum number of moves required for n disks?',
+    hints: [
+      'Think recursively: To move n disks from A to C, what must you first do with the top (n - 1) disks?',
+      'Move top (n - 1) disks from A to B. Move largest disk from A to C. Move top (n - 1) disks from B to C.',
+      'Recurrence relation: T(n) = 2T(n - 1) + 1. For n = 1: 1. For n = 2: 3. For n = 3: 7. What is the closed formula?'
+    ],
+    explanation:
+      'The minimum number of moves is 2^n - 1.\n\nFor 3 disks: 2^3 - 1 = 7 moves.\nFor 4 disks: 2^4 - 1 = 15 moves.\n\nRecursive Strategy:\n1. Move top (n-1) disks from Source (A) to Auxiliary (B) using Target (C) as buffer: T(n-1) moves.\n2. Move largest disk n from Source (A) to Target (C): 1 move.\n3. Move (n-1) disks from Auxiliary (B) to Target (C) using Source (A) as buffer: T(n-1) moves.\nTotal: T(n) = 2T(n-1) + 1 = 2^n - 1.',
+    interviewTip:
+      'Divide and Conquer & Master Theorem: Hanoi is the foundational benchmark for understanding recursive call stacks, exponential time complexity O(2^n), and inductive proofs.'
+  },
+  {
+    id: 'hundred-doors',
+    number: 25,
+    name: 'The 100 Doors Problem',
+    category: 'math',
+    companies: ['Amazon', 'Microsoft', 'Infosys'],
+    difficulty: 'Easy',
+    icon: '🚪',
+    problemStatement:
+      'There are 100 closed doors in a hallway, numbered 1 to 100. On the 1st pass, you visit every door (1, 2, 3...) and toggle its state (closed becomes open). On the 2nd pass, you visit every 2nd door (2, 4, 6...) and toggle it. On the 3rd pass, you visit every 3rd door (3, 6, 9...), and so on, until on the 100th pass you visit only door 100. After all 100 passes, which doors remain OPEN?',
+    hints: [
+      'Door k is toggled on pass p if and only if p is a divisor/factor of k.',
+      'If a door is toggled an EVEN number of times, it ends up CLOSED. If toggled an ODD number of times, it ends up OPEN.',
+      'Which integers have an ODD number of factors? Factors always come in pairs (a × b = k), EXCEPT when a = b!'
+    ],
+    explanation:
+      'Only the PERFECT SQUARES remain open: 1, 4, 9, 16, 25, 36, 49, 64, 81, 100 (exactly 10 doors)!\n\nMathematical Proof:\nA door is toggled once for every positive factor it has. Most numbers have factors that come in distinct pairs (e.g., 12 has pairs 1×12, 2×6, 3×4 = 6 factors, an even number, leaving door 12 CLOSED).\n\nHowever, a perfect square k has a factor pair where both factors are identical (e.g., 16 has 1×16, 2×8, and 4×4). The repeated factor 4 is counted only once, giving 16 an ODD number of divisors (1, 2, 4, 8, 16 = 5 factors). Because it is toggled an odd number of times, it finishes OPEN!',
+    interviewTip:
+      'Number theory & Factor parity: Instead of running an O(n^2) nested loop simulation, this problem tests whether you can reduce the algorithm to O(1) by recognizing factor pairing and perfect squares.'
   }
 ];
