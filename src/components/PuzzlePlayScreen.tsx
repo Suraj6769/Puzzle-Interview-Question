@@ -16,9 +16,11 @@ import {
   ShieldCheck,
   Volume2,
   VolumeX,
+  Palette,
 } from 'lucide-react';
 import { PuzzleMeta, PuzzleProgress } from '../types';
 import { sound } from '../utils/audio';
+import { ThemeId, THEMES } from '../utils/theme';
 
 // Demos
 import { WaterJugDemo } from './demos/WaterJugDemo';
@@ -53,6 +55,8 @@ interface Props {
   onBack: () => void;
   onSaveProgress: (puzzleId: string, stars: number, hintsUsed: number, moves: number) => void;
   onNextPuzzle?: () => void;
+  theme?: ThemeId;
+  onSetTheme?: (theme: ThemeId) => void;
 }
 
 export const PuzzlePlayScreen: React.FC<Props> = ({
@@ -61,14 +65,19 @@ export const PuzzlePlayScreen: React.FC<Props> = ({
   onBack,
   onSaveProgress,
   onNextPuzzle,
+  theme = 'cyber-indigo',
+  onSetTheme,
 }) => {
   const [activeTab, setActiveTab] = useState<'demo' | 'hints' | 'solution' | 'code'>('demo');
   const [revealedHints, setRevealedHints] = useState<number[]>([]);
   const [showSuccessModal, setShowSuccessModal] = useState<boolean>(false);
+  const [showThemePicker, setShowThemePicker] = useState<boolean>(false);
   const [earnedStars, setEarnedStars] = useState<number>(0);
   const [sessionMoves, setSessionMoves] = useState<number>(0);
   const [timerSeconds, setTimerSeconds] = useState<number>(0);
   const [isMuted, setIsMuted] = useState<boolean>(() => sound.isMuted());
+
+  const themeConfig = THEMES[theme] || THEMES['cyber-indigo'];
 
   // Timer
   useEffect(() => {
@@ -184,9 +193,14 @@ export const PuzzlePlayScreen: React.FC<Props> = ({
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-slate-950 text-slate-200 relative">
-      {/* Subtle Radial Glow Background */}
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_center,rgba(79,70,229,0.06)_0%,transparent_60%)] pointer-events-none" />
+    <div className={`flex flex-col min-h-screen ${themeConfig.bgClass} text-slate-200 relative transition-colors duration-500`}>
+      {/* Subtle Dynamic Radial Glow Background */}
+      <div
+        className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-5xl h-[400px] pointer-events-none blur-3xl opacity-30 transition-all duration-700"
+        style={{
+          background: `radial-gradient(ellipse at top, ${themeConfig.glowColor} 0%, transparent 70%)`,
+        }}
+      />
 
       {/* Top Header Bar */}
       <header className="sticky top-0 z-40 bg-slate-900/50 backdrop-blur-md border-b border-slate-800 px-4 sm:px-6 py-3">
@@ -233,18 +247,59 @@ export const PuzzlePlayScreen: React.FC<Props> = ({
             </div>
           </div>
 
-          <div className="flex items-center gap-3 sm:gap-4">
+          <div className="flex items-center gap-2.5 sm:gap-3">
+            {/* Theme Selector Popover */}
+            {onSetTheme && (
+              <div className="relative">
+                <button
+                  onClick={() => {
+                    sound.playClick();
+                    setShowThemePicker(!showThemePicker);
+                  }}
+                  className="p-2 rounded-full bg-slate-800/60 hover:bg-slate-800 border border-slate-700 text-slate-400 hover:text-white transition flex items-center gap-1.5"
+                  title="Switch Color Theme"
+                >
+                  <Palette className="w-3.5 h-3.5" />
+                  <span
+                    className="w-2 h-2 rounded-full inline-block"
+                    style={{ backgroundColor: themeConfig.dotColor }}
+                  />
+                </button>
+
+                {showThemePicker && (
+                  <div className="absolute right-0 mt-2 w-44 bg-slate-900/95 border border-slate-700 rounded-2xl p-1.5 shadow-2xl backdrop-blur-xl z-50 flex flex-col gap-1">
+                    {(Object.keys(THEMES) as ThemeId[]).map(tKey => {
+                      const t = THEMES[tKey];
+                      return (
+                        <button
+                          key={tKey}
+                          onClick={() => {
+                            onSetTheme(tKey);
+                            setShowThemePicker(false);
+                          }}
+                          className="flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs text-slate-300 hover:text-white hover:bg-white/10 transition text-left"
+                        >
+                          <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: t.dotColor }} />
+                          <span>{t.name}</span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+            )}
+
             {/* Audio Mute Toggle */}
             <button
               onClick={handleToggleMute}
               title={isMuted ? 'Unmute SFX' : 'Mute SFX'}
-              className="p-1.5 rounded-full bg-slate-800/50 hover:bg-slate-800 border border-slate-700 text-slate-400 hover:text-white transition"
+              className="p-2 rounded-full bg-slate-800/60 hover:bg-slate-800 border border-slate-700 text-slate-400 hover:text-white transition"
             >
               {isMuted ? <VolumeX className="w-3.5 h-3.5 text-rose-400" /> : <Volume2 className="w-3.5 h-3.5 text-indigo-400" />}
             </button>
 
             {/* Timer Pill */}
-            <div className="flex items-center space-x-2 bg-slate-800/50 px-3 py-1 rounded-full border border-slate-700 text-xs font-mono text-slate-300">
+            <div className="flex items-center space-x-2 bg-slate-800/60 px-3 py-1.5 rounded-full border border-slate-700/80 text-xs font-mono text-slate-300">
               <Clock className="w-3.5 h-3.5 text-indigo-400" />
               <span>{formatTimer(timerSeconds)}</span>
             </div>
@@ -292,12 +347,12 @@ export const PuzzlePlayScreen: React.FC<Props> = ({
         </div>
 
         {/* Navigation Tabs */}
-        <div className="flex items-center gap-2 border-b border-slate-800 pb-2 overflow-x-auto scrollbar-none">
+        <div className="flex items-center gap-2 border-b border-slate-800/80 pb-2 overflow-x-auto scrollbar-none">
           <button
             onClick={() => handleSwitchTab('demo')}
-            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition whitespace-nowrap ${
+            className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold transition whitespace-nowrap ${
               activeTab === 'demo'
-                ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/20'
+                ? themeConfig.activeTabClass
                 : 'text-slate-400 hover:text-white hover:bg-slate-800/50'
             }`}
           >
@@ -307,9 +362,9 @@ export const PuzzlePlayScreen: React.FC<Props> = ({
 
           <button
             onClick={() => handleSwitchTab('hints')}
-            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition relative whitespace-nowrap ${
+            className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold transition relative whitespace-nowrap ${
               activeTab === 'hints'
-                ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/20'
+                ? themeConfig.activeTabClass
                 : 'text-slate-400 hover:text-white hover:bg-slate-800/50'
             }`}
           >
@@ -319,9 +374,9 @@ export const PuzzlePlayScreen: React.FC<Props> = ({
 
           <button
             onClick={() => handleSwitchTab('solution')}
-            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition whitespace-nowrap ${
+            className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold transition whitespace-nowrap ${
               activeTab === 'solution'
-                ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/20'
+                ? themeConfig.activeTabClass
                 : 'text-slate-400 hover:text-white hover:bg-slate-800/50'
             }`}
           >
@@ -331,9 +386,9 @@ export const PuzzlePlayScreen: React.FC<Props> = ({
 
           <button
             onClick={() => handleSwitchTab('code')}
-            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition whitespace-nowrap ${
+            className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold transition whitespace-nowrap ${
               activeTab === 'code'
-                ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/20'
+                ? themeConfig.activeTabClass
                 : 'text-slate-400 hover:text-white hover:bg-slate-800/50'
             }`}
           >

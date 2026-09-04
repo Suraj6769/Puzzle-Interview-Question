@@ -8,13 +8,26 @@ import { LevelMap } from './components/LevelMap';
 import { PuzzlePlayScreen } from './components/PuzzlePlayScreen';
 import { PUZZLES } from './data/puzzles';
 import { PuzzleMeta, PuzzleProgress } from './types';
+import { ThemeId, THEMES } from './utils/theme';
+import { sound } from './utils/audio';
 
 const STORAGE_KEY_PROGRESS = 'puzzlemaster_progress_v1';
 const STORAGE_KEY_STREAK = 'puzzlemaster_streak_v1';
 const STORAGE_KEY_LAST_LOGIN = 'puzzlemaster_last_login_v1';
+const STORAGE_KEY_THEME = 'puzzlemaster_theme_v1';
 
 export default function App() {
   const [selectedPuzzle, setSelectedPuzzle] = useState<PuzzleMeta | null>(null);
+
+  const [theme, setTheme] = useState<ThemeId>(() => {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY_THEME) as ThemeId;
+      return saved && THEMES[saved] ? saved : 'cyber-indigo';
+    } catch {
+      return 'cyber-indigo';
+    }
+  });
+
   const [progress, setProgress] = useState<Record<string, PuzzleProgress>>(() => {
     try {
       const saved = localStorage.getItem(STORAGE_KEY_PROGRESS);
@@ -32,6 +45,16 @@ export default function App() {
       return 1;
     }
   });
+
+  const handleSetTheme = (newTheme: ThemeId) => {
+    sound.playThemeChange();
+    setTheme(newTheme);
+    try {
+      localStorage.setItem(STORAGE_KEY_THEME, newTheme);
+    } catch {
+      // ignore
+    }
+  };
 
   // Calculate and update daily streak
   useEffect(() => {
@@ -97,6 +120,7 @@ export default function App() {
 
   const handleResetProgress = () => {
     if (window.confirm('Are you sure you want to reset all your progress and stars?')) {
+      sound.playReset();
       setProgress({});
       localStorage.removeItem(STORAGE_KEY_PROGRESS);
     }
@@ -112,8 +136,12 @@ export default function App() {
     }
   };
 
+  const themeConfig = THEMES[theme] || THEMES['cyber-indigo'];
+
   return (
-    <div className="min-h-screen bg-slate-950 font-sans text-slate-200 selection:bg-indigo-500 selection:text-white flex flex-col justify-between">
+    <div
+      className={`min-h-screen ${themeConfig.bgClass} font-sans text-slate-200 selection:bg-indigo-500 selection:text-white flex flex-col justify-between transition-colors duration-500`}
+    >
       <div className="flex-1 flex flex-col">
         {!selectedPuzzle ? (
           <LevelMap
@@ -122,6 +150,8 @@ export default function App() {
             onSelectPuzzle={puzzle => setSelectedPuzzle(puzzle)}
             onResetProgress={handleResetProgress}
             streak={streak}
+            theme={theme}
+            onSetTheme={handleSetTheme}
           />
         ) : (
           <PuzzlePlayScreen
@@ -130,17 +160,18 @@ export default function App() {
             onBack={() => setSelectedPuzzle(null)}
             onSaveProgress={handleSaveProgress}
             onNextPuzzle={handleNextPuzzle}
+            theme={theme}
+            onSetTheme={handleSetTheme}
           />
         )}
       </div>
 
       {/* Sleek Interface Footer */}
-      <footer className="h-8 bg-slate-950 border-t border-slate-900 flex items-center px-6 justify-between text-[10px] text-slate-600 font-bold uppercase tracking-widest shrink-0">
-        <span className="hidden sm:inline">Difficulty Tier: Senior Engineering</span>
-        <span>Connected to: FAANG Cloud Server</span>
-        <span>Build v1.0.4 - Production</span>
+      <footer className="h-9 bg-slate-950/80 backdrop-blur-md border-t border-slate-900/80 flex items-center px-6 justify-between text-[10px] text-slate-500 font-bold uppercase tracking-widest shrink-0 z-20">
+        <span className="hidden sm:inline">Difficulty Tier: Senior Engineering & Staff FAANG</span>
+        <span>Connected to: FAANG Cloud Simulation</span>
+        <span>Active Theme: {themeConfig.name}</span>
       </footer>
     </div>
   );
 }
-

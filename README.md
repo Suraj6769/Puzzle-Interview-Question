@@ -15,10 +15,20 @@ An interactive, gamified web platform for mastering classic **FAANG & Tier-1 tec
 
 ## 📸 Screenshots
 
-### 1. Level Map & Dashboard
-Explore all 25 puzzles categorized by logic, math, arrangement, and spatial reasoning. Filter instantly by target employer (**Google**, **Microsoft**, **Amazon**, **Apple**, **Meta**, **Goldman Sachs**) and bookmark favorite puzzles.
+### 1. Level Map & Themeable Dashboard
+Explore all 25 puzzles categorized by logic, math, arrangement, and spatial reasoning. Filter instantly by target employer (**Google**, **Microsoft**, **Amazon**, **Apple**, **Meta**, **Goldman Sachs**), search keywords in real-time, bookmark favorites, and switch between 5 curated visual themes with ambient glow effects.
 
 ![Level Map Dashboard](screenshots/level_map.png)
+
+#### 🎨 5 Dynamic Color Themes
+Customize your learning environment with instant theme switching:
+- **Cyber Indigo:** Deep futuristic tech aesthetic with violet & indigo accents.
+- **Emerald Matrix:** Terminal hacker vibe with neon emerald & mint highlights.
+- **Violet Nebula:** Cosmic dark space atmosphere with vivid purple & fuchsia glow.
+- **Crimson Ember:** Fiery high-energy styling with rose & orange contrasts.
+- **Golden Amber:** Warm, luxurious amber & bronze tones.
+
+![Themes Matrix Preview](screenshots/themes_matrix.png)
 
 ---
 
@@ -83,11 +93,13 @@ Track your moves, time, and stars earned upon mastering each challenge.
 ## ✨ Key Features
 
 - **🎮 25 Interactive Simulations:** Custom interactive game demos for all 25 puzzles with move tracking, resets, and undo support.
+- **🎨 5 Curated Color Themes:** Switch seamlessly across Cyber Indigo, Emerald Matrix, Violet Nebula, Crimson Ember, and Golden Amber with dynamic background glow and accent adaptation.
+- **🔊 Web Audio Synthesizer:** Zero-dependency procedural sound effects for theme changes, moves, hint reveals, errors, and victory fanfares with persistent mute toggle.
+- **✨ Enhanced Modern UI:** Built with Google Fonts (*Plus Jakarta Sans*, *Outfit*, *JetBrains Mono*), glassmorphic backdrops, smooth gradient badges, and responsive stats hero banner.
 - **💡 3-Tier Progressive Hints:** Gradually reveals clues without spoiling the core breakthrough.
 - **📐 Mathematical Proofs & Interview Breakdowns:** Rigorous formal explanations and edge case analysis.
 - **⚡ Algorithmic Insights:** Connects each puzzle directly to data structures and algorithms (graphs, DP, binary search, information theory).
-- **🔊 Web Audio Synthesizer:** Real-time sound effects for moves, hint reveals, and victory fanfares (zero external audio assets needed) with a one-click mute toggle.
-- **🏷️ Company Quick Filters:** Filter questions asked at Google, Microsoft, Amazon, Apple, Meta, and Goldman Sachs.
+- **🏷️ Company Quick Filters & Instant Search:** Filter questions asked at Google, Microsoft, Amazon, Apple, Meta, and Goldman Sachs, or search by concept.
 - **⭐ Favorites & Bookmarking:** Save challenging puzzles to review before your interview rounds.
 - **📋 Formula & Logic Cheat Sheet Modal:** Quick-reference cheat sheet for Bézout's identity, Bayes' theorem, ternary scale bounds, and factor parity.
 
