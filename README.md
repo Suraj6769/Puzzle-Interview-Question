@@ -142,6 +142,50 @@ Track your moves, time, and stars earned upon mastering each challenge.
 
 ---
 
+## 🔐 Multi-User Authentication & Isolated Progress
+
+PuzzleMaster includes a multi-account authentication and persistence service (`src/utils/authStorage.ts`):
+- **Candidate Profiles:** Register custom candidate accounts specifying Name, Email, Target Company (**Google, Meta, Amazon, Apple, Microsoft, Goldman Sachs**), and Target Role (**L3/L4/L5 SWE**, **Quant Researcher**, **System Architect**).
+- **Per-User Isolated Storage:** Progress, stars, completed levels, bookmarks, and streak metrics are completely separated per user (`puzzlemaster_progress_user_<id>`). When a new user creates an account, they begin fresh with zero solved levels and can independently solve puzzles.
+- **1-Click Candidate Presets:** Instant test candidate switching:
+  - **Alex Chen (Google Candidate):** 7 solved puzzles, 18 stars.
+  - **Priya Sharma (Meta Candidate):** 12 solved puzzles, 34 stars.
+  - **Marcus Vance (Amazon Candidate):** 20 solved puzzles, 58 stars.
+- **Instant Guest Mode:** Jump directly into the application without registration.
+
+---
+
+## 📈 Difficulty-First Learning Progression
+
+All 25 puzzles are canonically ordered and numbered to ensure optimal cognitive ramp-up:
+
+| Tier | Levels | Difficulty | Focus Areas | Key Examples |
+|:---:|:---:|:---:|:---|:---|
+| **Tier 1** | **Levels 1–5** | 🟢 **Easy** | Parity, invariants, lateral reasoning, and mathematical fundamentals. | *Heaven & Hell (#1)*, *Mislabeled Jars (#2)*, *Snail & Wall (#3)*, *3 Ants on a Triangle (#4)*, *The 100 Doors Problem (#5)* |
+| **Tier 2** | **Levels 6–19** | 🟡 **Medium** | State machines, probability, recursive transitions, and minimax optimization. | *Water Jug (#6)*, *3 Bulbs & Switches (#7)*, *Monty Hall (#8)*, *Torch & Bridge (#9)*, *River Crossing (#17)*, *Tower of Hanoi (#19)* |
+| **Tier 3** | **Levels 20–25** | 🔴 **Hard** | Information theory, binary coding, ternary trees, and extreme minimax DP. | *100 Prisoners & Hats (#20)*, *Camel & Banana (#21)*, *2 Eggs & 100 Floors (#22)*, *Poison & Rat (#23)*, *Balance Scale (#25)* |
+
+---
+
+## 📱 Mobile App Experience & PWA / Capacitor
+
+PuzzleMaster is engineered with mobile-first responsiveness:
+- **Mobile Bottom Navigation Bar:** Dedicated bottom tab bar on mobile phones with 4 tabs:
+  - **Puzzles:** Grid of interactive puzzle cards with search and company filters.
+  - **Tiers:** Visual 3-tier roadmap with progress meters and quick-launch buttons.
+  - **Mastery:** Real-time readiness gauge, star count, candidate rank, and domain breakdown.
+  - **Profile:** Candidate credentials, theme switcher, sound effects toggle, and sign out.
+- **Progressive Web App (PWA):** Equipped with `public/manifest.json`, high-resolution app squircle icon (`public/icon.svg`), and mobile web app meta tags for instant **"Add to Home Screen"** on iOS Safari and Android Chrome.
+- **Native Mobile Apps (Capacitor):** Pre-configured `capacitor.config.ts` ready to build native Android APKs and iOS Xcode projects:
+  ```bash
+  npm i @capacitor/core @capacitor/cli @capacitor/android @capacitor/ios
+  npx cap add android
+  npx cap sync
+  npx cap open android
+  ```
+
+---
+
 ## 🛠️ Technology Stack
 
 - **Frontend Framework:** [React 19](https://react.dev/)
@@ -151,6 +195,7 @@ Track your moves, time, and stars earned upon mastering each challenge.
 - **Icons:** [Lucide React](https://lucide.dev/)
 - **Visual Effects:** [Canvas Confetti](https://www.npmjs.com/package/canvas-confetti)
 - **Audio Engine:** Native Web Audio API Synthesizer
+- **Mobile Runtime:** Progressive Web App (PWA) + Capacitor Config
 
 ---
 

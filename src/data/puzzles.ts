@@ -8,90 +8,11 @@ export const CATEGORIES: { id: Category; label: string; icon: string }[] = [
 ];
 
 export const PUZZLES: PuzzleMeta[] = [
-  // 🧠 Logical
-  {
-    id: 'water-jug',
-    number: 1,
-    name: 'Water Jug Problem',
-    category: 'logical',
-    companies: ['Microsoft', 'Google', 'Goldman Sachs'],
-    difficulty: 'Medium',
-    icon: '💧',
-    problemStatement:
-      'You are given an empty 4-liter jug and an empty 9-liter jug with an unlimited water supply. Neither jug has markings. How can you measure exactly 6 liters of water?',
-    hints: [
-      'Think about mathematical greatest common divisors and linear combinations: 9x + 4y = 6.',
-      'Try repeatedly filling the 9L jug and pouring it into the 4L jug, emptying the 4L jug whenever it fills up.',
-      'Pattern: Fill 9L → Pour to 4L (leaving 5L in 9L) → Empty 4L → Pour to 4L (leaving 1L in 9L) → Empty 4L → Pour 1L into 4L → Fill 9L → Pour into 4L (which takes 3L, leaving exactly 6L in the 9L jug!).'
-    ],
-    explanation:
-      'By filling the 9L jug and repeatedly pouring into the 4L jug, we calculate remainders: 9 - 4 - 4 = 1L. We transfer that 1L into the 4L jug (leaving 3L space). Then we fill the 9L jug again and pour into the 4L jug until full (3L poured). The 9L jug now holds exactly 9 - 3 = 6 Liters!',
-    interviewTip:
-      'In interviews, interviewers use this to test state-space graph search (BFS) and the Extended Euclidean algorithm (Bézout’s identity: ax + by = target is solvable iff target is a multiple of gcd(a, b)).'
-  },
-  {
-    id: 'bulbs-switches',
-    number: 2,
-    name: '3 Bulbs and 3 Switches',
-    category: 'logical',
-    companies: ['MakeMyTrip', 'Qualcomm', 'Amazon'],
-    difficulty: 'Medium',
-    icon: '💡',
-    problemStatement:
-      'In room A there are three switches (1, 2, 3) connected to three light bulbs in room B. You cannot see room B from room A. You may manipulate the switches as much as you like, but you can only enter room B ONCE. How do you identify which switch controls which bulb?',
-    hints: [
-      'Incandescent light bulbs produce two observable physical phenomena when powered: light and something else.',
-      'Heat! Light bulbs get hot when left on for several minutes.',
-      'Turn Switch 1 ON for 5-10 minutes, then turn it OFF. Turn Switch 2 ON and leave it ON. Keep Switch 3 OFF. Walk into the room!'
-    ],
-    explanation:
-      'When you enter room B: The bulb that is currently ON corresponds to Switch 2. The bulb that is OFF but warm to the touch corresponds to Switch 1. The bulb that is OFF and cold corresponds to Switch 3!',
-    interviewTip:
-      'This puzzle tests your ability to think outside digital binary constraints (0 or 1) by utilizing physical properties (state = {ON, OFF-Warm, OFF-Cold}) to encode 3 states.'
-  },
-  {
-    id: 'prisoners-hats',
-    number: 14,
-    name: '100 Prisoners & Hats',
-    category: 'logical',
-    companies: ['Google', 'Microsoft', 'Palantir'],
-    difficulty: 'Hard',
-    icon: '🎩',
-    problemStatement:
-      '100 prisoners stand in a single line facing forward. Each wears either a Red or Black hat. Each prisoner can see all hats in front of them, but cannot see their own hat or hats behind them. Starting from the back, each must announce their hat color. They can agree on a strategy beforehand. What strategy guarantees at least 99 prisoners survive?',
-    hints: [
-      'The very first prisoner at the back has no information about their own hat, but has complete information about the parity of all 99 hats in front.',
-      'Use modulo arithmetic (parity): Assign 0 to Black and 1 to Red.',
-      'The first prisoner announces "Red" if the sum of red hats in front is even, or "Black" if odd. Every next prisoner computes their own hat based on the remaining parity!'
-    ],
-    explanation:
-      'The back prisoner sacrifices (50% chance of survival) by communicating the parity (even/odd) of Red hats ahead. Every subsequent prisoner counts the red hats ahead and remembers the parity of hats already called behind them. Their own hat color is simply the delta in parity!',
-    interviewTip:
-      'Parity bit / XOR error-detection coding: This directly mirrors parity checks and Hamming codes in distributed systems and telecommunications.'
-  },
-  {
-    id: 'camel-banana',
-    number: 16,
-    name: 'Camel & Banana',
-    category: 'logical',
-    companies: ['Amazon', 'Flipkart'],
-    difficulty: 'Hard',
-    icon: '🐪',
-    problemStatement:
-      'You have 3,000 bananas at point A and want to transport them across 1,000 km of desert to point B. A camel can carry a maximum of 1,000 bananas at once and eats 1 banana for every 1 km walked. What is the maximum number of bananas you can deliver to point B?',
-    hints: [
-      'If you try to take 1,000 bananas directly all 1,000 km, the camel will eat all 1,000 and you will have 0!',
-      'You must make intermediate checkpoints and transport bananas in relays. When transporting 3,000 bananas, the camel needs 5 trips (3 forward, 2 back) per km, consuming 5 bananas per km.',
-      'Move bananas until inventory drops to 2,000 (after 1,000/5 = 200 km). Then with 2,000 bananas, it takes 3 trips (2 forward, 1 back), consuming 3 bananas/km. After 1,000/3 ≈ 333 km (at km 533), 1,000 bananas remain. Then just 1 forward trip!'
-    ],
-    explanation:
-      'At start (3000 bananas): 5 trips per km = 5 bananas/km. At km 200, 2000 bananas remain (1000 consumed). Next phase: 2000 bananas take 3 trips = 3 bananas/km. In 333.3 km (at km 533.3), 1000 bananas remain. From km 533.3, 1 trip over remaining 466.7 km burns 467 bananas. Result: 1000 - 467 = 533 bananas delivered!',
-    interviewTip:
-      'Dynamic inventory management and piecewise linear optimization: Interviewers look for how you break a continuous problem into optimal discrete transition states.'
-  },
+
+  // 🟢 EASY TIER (Levels 1–5)
   {
     id: 'heaven-hell',
-    number: 15,
+    number: 1,
     name: 'Heaven & Hell',
     category: 'logical',
     companies: ['Amazon', 'Infosys', 'Bloomberg'],
@@ -111,7 +32,7 @@ export const PUZZLES: PuzzleMeta[] = [
   },
   {
     id: 'mislabeled-jars',
-    number: 13,
+    number: 2,
     name: 'Mislabeled Jars',
     category: 'logical',
     companies: ['Google', 'Microsoft', 'Apple'],
@@ -129,11 +50,111 @@ export const PUZZLES: PuzzleMeta[] = [
     interviewTip:
       'Elimination by constraint satisfaction: Focus on the node with the highest degree of constraint (the "Mixed" label, which cannot be mixed).'
   },
+  {
+    id: 'snail-wall',
+    number: 3,
+    name: 'Snail & Wall',
+    category: 'math',
+    companies: ['TCS', 'Infosys', 'Wipro'],
+    difficulty: 'Easy',
+    icon: '🐌',
+    problemStatement:
+      'A snail is at the bottom of a 20-meter deep well. Each day, the snail climbs up 5 meters during daylight. Each night, as it sleeps, it slides back down 4 meters. On which day will the snail finally reach the top and escape the well?',
+    hints: [
+      'Do not just calculate net progress (5 - 4 = 1m/day) and conclude 20 days! The snail escapes during the day before it slides down.',
+      'On what meter mark can a 5-meter climb take the snail over the 20-meter ledge in a single day?',
+      'At 15 meters, a 5-meter climb reaches 20 meters immediately. How many full day/night cycles are needed to reach 15 meters?'
+    ],
+    explanation:
+      'Net climb per 24 hours is 1 meter (5m - 4m). At the end of Day 15 (after night slip), the snail is at 15 meters. On the morning of Day 16, it climbs 5 meters: 15m + 5m = 20 meters! It reaches the rim and crawls out immediately, never slipping down again. Answer: 16 days!',
+    interviewTip:
+      'Boundary conditions & off-by-one errors: Interviewers use this to verify whether you check termination criteria before running update steps in loops.'
+  },
+  {
+    id: 'ants-triangle',
+    number: 4,
+    name: '3 Ants on a Triangle',
+    category: 'spatial',
+    companies: ['Intuit', 'ZS Associates', 'Amazon'],
+    difficulty: 'Easy',
+    icon: '🐜',
+    problemStatement:
+      'Three ants are sitting at the three vertices of an equilateral triangle. Each ant randomly and independently chooses a direction to walk along an edge (clockwise or counter-clockwise) with equal probability (50% each). What is the probability that none of the ants collide with each other?',
+    hints: [
+      'Each ant has 2 choices: Clockwise (C) or Counter-Clockwise (CCW).',
+      'With 3 independent ants, how many total possible direction combinations are there? 2 × 2 × 2 = 8.',
+      'Which combinations result in ZERO collisions? Only when ALL ants walk clockwise (C, C, C) or ALL ants walk counter-clockwise (CCW, CCW, CCW).'
+    ],
+    explanation:
+      'Total outcomes: 2^3 = 8 equally likely outcomes. Collision-free outcomes: Only 2 configurations (all clockwise or all counter-clockwise). Therefore, Probability = 2 / 8 = 1/4 = 25% (or 0.25).',
+    interviewTip:
+      'Combinatorics generalization: For an n-sided polygon with n ants, the probability of no collision is 2 / (2^n) = 1 / 2^(n - 1).'
+  },
+  {
+    id: 'hundred-doors',
+    number: 5,
+    name: 'The 100 Doors Problem',
+    category: 'math',
+    companies: ['Amazon', 'Microsoft', 'Infosys'],
+    difficulty: 'Easy',
+    icon: '🚪',
+    problemStatement:
+      'There are 100 closed doors in a hallway, numbered 1 to 100. On the 1st pass, you visit every door (1, 2, 3...) and toggle its state (closed becomes open). On the 2nd pass, you visit every 2nd door (2, 4, 6...) and toggle it. On the 3rd pass, you visit every 3rd door (3, 6, 9...), and so on, until on the 100th pass you visit only door 100. After all 100 passes, which doors remain OPEN?',
+    hints: [
+      'Door k is toggled on pass p if and only if p is a divisor/factor of k.',
+      'If a door is toggled an EVEN number of times, it ends up CLOSED. If toggled an ODD number of times, it ends up OPEN.',
+      'Which integers have an ODD number of factors? Factors always come in pairs (a × b = k), EXCEPT when a = b!'
+    ],
+    explanation:
+      'Only the PERFECT SQUARES remain open: 1, 4, 9, 16, 25, 36, 49, 64, 81, 100 (exactly 10 doors)!\n\nMathematical Proof:\nA door is toggled once for every positive factor it has. Most numbers have factors that come in distinct pairs (e.g., 12 has pairs 1×12, 2×6, 3×4 = 6 factors, an even number, leaving door 12 CLOSED).\n\nHowever, a perfect square k has a factor pair where both factors are identical (e.g., 16 has 1×16, 2×8, and 4×4). The repeated factor 4 is counted only once, giving 16 an ODD number of divisors (1, 2, 4, 8, 16 = 5 factors). Because it is toggled an odd number of times, it finishes OPEN!',
+    interviewTip:
+      'Number theory & Factor parity: Instead of running an O(n^2) nested loop simulation, this problem tests whether you can reduce the algorithm to O(1) by recognizing factor pairing and perfect squares.'
+  },
 
-  // 📐 Math & Analytical
+  // 🟡 MEDIUM TIER (Levels 6–19)
+  {
+    id: 'water-jug',
+    number: 6,
+    name: 'Water Jug Problem',
+    category: 'logical',
+    companies: ['Microsoft', 'Google', 'Goldman Sachs'],
+    difficulty: 'Medium',
+    icon: '💧',
+    problemStatement:
+      'You are given an empty 4-liter jug and an empty 9-liter jug with an unlimited water supply. Neither jug has markings. How can you measure exactly 6 liters of water?',
+    hints: [
+      'Think about mathematical greatest common divisors and linear combinations: 9x + 4y = 6.',
+      'Try repeatedly filling the 9L jug and pouring it into the 4L jug, emptying the 4L jug whenever it fills up.',
+      'Pattern: Fill 9L → Pour to 4L (leaving 5L in 9L) → Empty 4L → Pour to 4L (leaving 1L in 9L) → Empty 4L → Pour 1L into 4L → Fill 9L → Pour into 4L (which takes 3L, leaving exactly 6L in the 9L jug!).'
+    ],
+    explanation:
+      'By filling the 9L jug and repeatedly pouring into the 4L jug, we calculate remainders: 9 - 4 - 4 = 1L. We transfer that 1L into the 4L jug (leaving 3L space). Then we fill the 9L jug again and pour into the 4L jug until full (3L poured). The 9L jug now holds exactly 9 - 3 = 6 Liters!',
+    interviewTip:
+      'In interviews, interviewers use this to test state-space graph search (BFS) and the Extended Euclidean algorithm (Bézout’s identity: ax + by = target is solvable iff target is a multiple of gcd(a, b)).'
+  },
+  {
+    id: 'bulbs-switches',
+    number: 7,
+    name: '3 Bulbs and 3 Switches',
+    category: 'logical',
+    companies: ['MakeMyTrip', 'Qualcomm', 'Amazon'],
+    difficulty: 'Medium',
+    icon: '💡',
+    problemStatement:
+      'In room A there are three switches (1, 2, 3) connected to three light bulbs in room B. You cannot see room B from room A. You may manipulate the switches as much as you like, but you can only enter room B ONCE. How do you identify which switch controls which bulb?',
+    hints: [
+      'Incandescent light bulbs produce two observable physical phenomena when powered: light and something else.',
+      'Heat! Light bulbs get hot when left on for several minutes.',
+      'Turn Switch 1 ON for 5-10 minutes, then turn it OFF. Turn Switch 2 ON and leave it ON. Keep Switch 3 OFF. Walk into the room!'
+    ],
+    explanation:
+      'When you enter room B: The bulb that is currently ON corresponds to Switch 2. The bulb that is OFF but warm to the touch corresponds to Switch 1. The bulb that is OFF and cold corresponds to Switch 3!',
+    interviewTip:
+      'This puzzle tests your ability to think outside digital binary constraints (0 or 1) by utilizing physical properties (state = {ON, OFF-Warm, OFF-Cold}) to encode 3 states.'
+  },
   {
     id: 'monty-hall',
-    number: 3,
+    number: 8,
     name: 'Monty Hall Problem',
     category: 'math',
     companies: ['VMware', 'Meta', 'Netflix'],
@@ -152,28 +173,8 @@ export const PUZZLES: PuzzleMeta[] = [
       'Conditional probability & Bayesian updating: P(Car in Door 2 | Host opened Door 3) = (1 * 1/3) / (1/2) = 2/3.'
   },
   {
-    id: 'eggs-floors',
-    number: 4,
-    name: '2 Eggs & 100 Floors',
-    category: 'math',
-    companies: ['Google', 'Microsoft', 'Uber'],
-    difficulty: 'Hard',
-    icon: '🥚',
-    problemStatement:
-      'You are given 2 identical eggs and access to a 100-story building. An egg may break on any floor or survive even a drop from the 100th floor. If an egg survives, it can be dropped again. If it breaks, it is destroyed. What is the minimum number of drops needed in the worst case to determine the critical threshold floor?',
-    hints: [
-      'If you drop every 10 floors (10, 20, 30...) and Egg 1 breaks at 100, you need 10 + 9 = 19 drops worst case.',
-      'To keep the worst-case drop count constant, each successive step for Egg 1 should decrease by 1 to offset the extra drop used.',
-      'Set up the equation: x + (x - 1) + (x - 2) + ... + 1 >= 100. The sum of first x integers is x(x + 1)/2 >= 100. Solve for x!'
-    ],
-    explanation:
-      'Solving x(x + 1)/2 >= 100 gives x = 14 (14 * 15 / 2 = 105). Drop Egg 1 from floors: 14, 27 (14+13), 39 (27+12), 50 (39+11), 60, 69, 77, 84, 90, 95, 99, 100. If it breaks at floor 14, test 1 to 13 linearly with Egg 2 (max 1 + 13 = 14 drops). At every stage, total worst-case drops is exactly 14!',
-    interviewTip:
-      'Dynamic Programming & Triangular Numbers: This is a classic interview problem testing minimax strategy and balancing search tree branching.'
-  },
-  {
     id: 'torch-bridge',
-    number: 5,
+    number: 9,
     name: 'Torch & Bridge',
     category: 'math',
     companies: ['Google', 'Microsoft', 'Adobe'],
@@ -193,7 +194,7 @@ export const PUZZLES: PuzzleMeta[] = [
   },
   {
     id: 'marbles-jars',
-    number: 9,
+    number: 10,
     name: '50 Red & 50 Blue Marbles',
     category: 'math',
     companies: ['Google', 'Microsoft', 'Twitter'],
@@ -212,70 +213,8 @@ export const PUZZLES: PuzzleMeta[] = [
       'Probability maximization: By dedicating one whole branch to a certainty (P = 1.0), you maximize the weighted average over asymmetric allocations.'
   },
   {
-    id: 'poison-rat',
-    number: 17,
-    name: 'Poison & Rat (Binary Bottles)',
-    category: 'math',
-    companies: ['Amazon', 'Goldman Sachs', 'Meta'],
-    difficulty: 'Hard',
-    icon: '🧪',
-    problemStatement:
-      'You have 8 bottles of expensive wine, exactly one of which is poisoned with a tasteless, odorless lethal toxin. You have 3 laboratory test rats. A rat dies within 24 hours if it drinks even a drop of the poisoned wine. How can you identify the exact poisoned bottle in a single 24-hour testing cycle?',
-    hints: [
-      'Notice that 2^3 = 8. Think in binary base 2!',
-      'Number the bottles 0 to 7 (or 000 to 111 in 3-bit binary).',
-      'Assign Rat 0 to the least significant bit, Rat 1 to bit 1, Rat 2 to bit 2. Rat i drinks from all bottles whose binary representation has a 1 in position i!'
-    ],
-    explanation:
-      'Bottles: 0 (000), 1 (001), 2 (010), 3 (011), 4 (100), 5 (101), 6 (110), 7 (111). Rat 0 drinks from {1, 3, 5, 7}. Rat 1 drinks from {2, 3, 6, 7}. Rat 2 drinks from {4, 5, 6, 7}. If Rats 0 and 2 die, the poison bottle is binary 101 = Bottle 5! This scales to 1,000 bottles with ceil(log2(1000)) = 10 rats.',
-    interviewTip:
-      'Information theory & binary encoding: Each rat represents 1 bit of information (Alive = 0, Dead = 1). With N rats, you can distinguish 2^N possible outcomes.'
-  },
-  {
-    id: 'snail-wall',
-    number: 12,
-    name: 'Snail & Wall',
-    category: 'math',
-    companies: ['TCS', 'Infosys', 'Wipro'],
-    difficulty: 'Easy',
-    icon: '🐌',
-    problemStatement:
-      'A snail is at the bottom of a 20-meter deep well. Each day, the snail climbs up 5 meters during daylight. Each night, as it sleeps, it slides back down 4 meters. On which day will the snail finally reach the top and escape the well?',
-    hints: [
-      'Do not just calculate net progress (5 - 4 = 1m/day) and conclude 20 days! The snail escapes during the day before it slides down.',
-      'On what meter mark can a 5-meter climb take the snail over the 20-meter ledge in a single day?',
-      'At 15 meters, a 5-meter climb reaches 20 meters immediately. How many full day/night cycles are needed to reach 15 meters?'
-    ],
-    explanation:
-      'Net climb per 24 hours is 1 meter (5m - 4m). At the end of Day 15 (after night slip), the snail is at 15 meters. On the morning of Day 16, it climbs 5 meters: 15m + 5m = 20 meters! It reaches the rim and crawls out immediately, never slipping down again. Answer: 16 days!',
-    interviewTip:
-      'Boundary conditions & off-by-one errors: Interviewers use this to verify whether you check termination criteria before running update steps in loops.'
-  },
-
-  // 🎯 Arrangement
-  {
-    id: 'balls-lines',
-    number: 11,
-    name: '10 Balls in 5 Lines',
-    category: 'arrangement',
-    companies: ['Publicis Sapient', 'Deloitte', 'Cognizant'],
-    difficulty: 'Hard',
-    icon: '⚪',
-    problemStatement:
-      'You are given 10 identical balls. How can you arrange all 10 balls into 5 straight lines such that each line contains exactly 4 balls?',
-    hints: [
-      '5 lines with 4 balls each would normally require 5 × 4 = 20 balls if they didn\'t intersect.',
-      'Since you only have 10 balls, each ball must belong to multiple lines simultaneously (20 / 10 = 2 lines per ball).',
-      'What symmetrical 5-pointed geometric figure has 5 straight intersecting lines and 10 vertex/intersection points? A 5-pointed star (Pentagram)!'
-    ],
-    explanation:
-      'Draw a standard 5-pointed star (pentagram). A pentagram consists of 5 continuous straight lines. It has 5 outer vertex points and 5 inner intersection points, making 10 vertices in total. Along each of the 5 straight lines, there are exactly 4 points (2 outer tips + 2 inner intersections)!',
-    interviewTip:
-      'Projective geometry & duality: This tests your ability to translate intersection constraints (incidence matrices) into geometric graph topologies.'
-  },
-  {
     id: 'dice-calendar',
-    number: 10,
+    number: 11,
     name: 'Days of Month with 2 Dice',
     category: 'arrangement',
     companies: ['Microsoft', 'Amazon', 'Morgan Stanley'],
@@ -295,7 +234,7 @@ export const PUZZLES: PuzzleMeta[] = [
   },
   {
     id: 'matchstick-squares',
-    number: 18,
+    number: 12,
     name: 'Matchstick Puzzle',
     category: 'arrangement',
     companies: ['Apple', 'Meta', 'Epic Systems'],
@@ -315,7 +254,7 @@ export const PUZZLES: PuzzleMeta[] = [
   },
   {
     id: 'round-table-coins',
-    number: 19,
+    number: 13,
     name: 'Round Table Coin Game',
     category: 'arrangement',
     companies: ['Goldman Sachs', 'Morgan Stanley', 'Two Sigma'],
@@ -333,31 +272,9 @@ export const PUZZLES: PuzzleMeta[] = [
     interviewTip:
       'Game theory & invariant symmetry: By establishing symmetry on turn 1, Player 1 maintains a winning invariant (if Player 2 has a move, Player 1 is guaranteed a valid response).'
   },
-
-  // 🔷 Shape & Spatial
-  {
-    id: 'ants-triangle',
-    number: 6,
-    name: '3 Ants on a Triangle',
-    category: 'spatial',
-    companies: ['Intuit', 'ZS Associates', 'Amazon'],
-    difficulty: 'Easy',
-    icon: '🐜',
-    problemStatement:
-      'Three ants are sitting at the three vertices of an equilateral triangle. Each ant randomly and independently chooses a direction to walk along an edge (clockwise or counter-clockwise) with equal probability (50% each). What is the probability that none of the ants collide with each other?',
-    hints: [
-      'Each ant has 2 choices: Clockwise (C) or Counter-Clockwise (CCW).',
-      'With 3 independent ants, how many total possible direction combinations are there? 2 × 2 × 2 = 8.',
-      'Which combinations result in ZERO collisions? Only when ALL ants walk clockwise (C, C, C) or ALL ants walk counter-clockwise (CCW, CCW, CCW).'
-    ],
-    explanation:
-      'Total outcomes: 2^3 = 8 equally likely outcomes. Collision-free outcomes: Only 2 configurations (all clockwise or all counter-clockwise). Therefore, Probability = 2 / 8 = 1/4 = 25% (or 0.25).',
-    interviewTip:
-      'Combinatorics generalization: For an n-sided polygon with n ants, the probability of no collision is 2 / (2^n) = 1 / 2^(n - 1).'
-  },
   {
     id: 'chessboard-dominos',
-    number: 7,
+    number: 14,
     name: 'Chessboard & Dominos',
     category: 'spatial',
     companies: ['Google', 'Palantir', 'Jane Street'],
@@ -377,7 +294,7 @@ export const PUZZLES: PuzzleMeta[] = [
   },
   {
     id: 'cake-cuts',
-    number: 8,
+    number: 15,
     name: '3 Cuts for 8 Cake Pieces',
     category: 'spatial',
     companies: ['Adobe', 'Cognizant', 'Accenture'],
@@ -397,7 +314,7 @@ export const PUZZLES: PuzzleMeta[] = [
   },
   {
     id: 'nine-dots',
-    number: 20,
+    number: 16,
     name: '9 Dots Puzzle',
     category: 'spatial',
     companies: ['Apple', 'IDEO', 'Disney'],
@@ -417,7 +334,7 @@ export const PUZZLES: PuzzleMeta[] = [
   },
   {
     id: 'river-crossing',
-    number: 21,
+    number: 17,
     name: 'River Crossing (Wolf, Goat & Cabbage)',
     category: 'logical',
     companies: ['Google', 'Amazon', 'Microsoft'],
@@ -436,28 +353,8 @@ export const PUZZLES: PuzzleMeta[] = [
       'State-space graph search & Backtracking: Each safe state can be represented as a node in a graph. The key breakthrough is recognizing that optimal paths may require reversing an earlier action (taking the goat back) to maintain invariance.'
   },
   {
-    id: 'balance-scale',
-    number: 22,
-    name: 'Counterfeit Coin & Balance Scale',
-    category: 'math',
-    companies: ['Goldman Sachs', 'Microsoft', 'Palantir'],
-    difficulty: 'Hard',
-    icon: '⚖️',
-    problemStatement:
-      'You are given 9 coins that look identical, but exactly one is counterfeit and is slightly HEAVIER than the other 8 genuine coins of equal weight. You have a two-pan balance scale with no weights. What is the minimum number of weighings required to guarantee finding the counterfeit coin?',
-    hints: [
-      'A balance scale has 3 possible outcomes for each weighing: Left pan tilts down, Right pan tilts down, or Both pans stay balanced.',
-      'Because each weighing yields 3 outcomes, each weighing can divide the search space by a factor of 3 (base 3 / ternary search).',
-      'Split the 9 coins into 3 groups of 3 coins: A = {1, 2, 3}, B = {4, 5, 6}, C = {7, 8, 9}. Weigh A against B!'
-    ],
-    explanation:
-      'Exactly 2 weighings are guaranteed!\n\nWeighing 1: Weigh {1, 2, 3} vs {4, 5, 6}.\n• If Left tilts down, fake coin is in {1, 2, 3}.\n• If Right tilts down, fake coin is in {4, 5, 6}.\n• If Balanced, fake coin is in {7, 8, 9}.\n\nWeighing 2: Take the 3 suspect coins (say {1, 2, 3}). Weigh Coin 1 vs Coin 2.\n• If Left tilts down, Coin 1 is fake.\n• If Right tilts down, Coin 2 is fake.\n• If Balanced, Coin 3 is fake!\n\nIn information theory: 3^k >= N. With k = 2 weighings, 3^2 = 9 outcomes, which matches 9 coins perfectly.',
-    interviewTip:
-      'Ternary Search & Decision Trees: Rather than binary splitting (halving), interviewers expect you to realize a pan scale has 3 states (<, =, >), making ternary division optimal.'
-  },
-  {
     id: 'burning-ropes',
-    number: 23,
+    number: 18,
     name: 'Burning Ropes (Measure 45 Min)',
     category: 'logical',
     companies: ['Google', 'Bloomberg', 'Apple'],
@@ -477,7 +374,7 @@ export const PUZZLES: PuzzleMeta[] = [
   },
   {
     id: 'tower-of-hanoi',
-    number: 24,
+    number: 19,
     name: 'Tower of Hanoi',
     category: 'arrangement',
     companies: ['Microsoft', 'Amazon', 'Cisco'],
@@ -495,24 +392,126 @@ export const PUZZLES: PuzzleMeta[] = [
     interviewTip:
       'Divide and Conquer & Master Theorem: Hanoi is the foundational benchmark for understanding recursive call stacks, exponential time complexity O(2^n), and inductive proofs.'
   },
+
+  // 🔴 HARD TIER (Levels 20–25)
   {
-    id: 'hundred-doors',
-    number: 25,
-    name: 'The 100 Doors Problem',
-    category: 'math',
-    companies: ['Amazon', 'Microsoft', 'Infosys'],
-    difficulty: 'Easy',
-    icon: '🚪',
+    id: 'prisoners-hats',
+    number: 20,
+    name: '100 Prisoners & Hats',
+    category: 'logical',
+    companies: ['Google', 'Microsoft', 'Palantir'],
+    difficulty: 'Hard',
+    icon: '🎩',
     problemStatement:
-      'There are 100 closed doors in a hallway, numbered 1 to 100. On the 1st pass, you visit every door (1, 2, 3...) and toggle its state (closed becomes open). On the 2nd pass, you visit every 2nd door (2, 4, 6...) and toggle it. On the 3rd pass, you visit every 3rd door (3, 6, 9...), and so on, until on the 100th pass you visit only door 100. After all 100 passes, which doors remain OPEN?',
+      '100 prisoners stand in a single line facing forward. Each wears either a Red or Black hat. Each prisoner can see all hats in front of them, but cannot see their own hat or hats behind them. Starting from the back, each must announce their hat color. They can agree on a strategy beforehand. What strategy guarantees at least 99 prisoners survive?',
     hints: [
-      'Door k is toggled on pass p if and only if p is a divisor/factor of k.',
-      'If a door is toggled an EVEN number of times, it ends up CLOSED. If toggled an ODD number of times, it ends up OPEN.',
-      'Which integers have an ODD number of factors? Factors always come in pairs (a × b = k), EXCEPT when a = b!'
+      'The very first prisoner at the back has no information about their own hat, but has complete information about the parity of all 99 hats in front.',
+      'Use modulo arithmetic (parity): Assign 0 to Black and 1 to Red.',
+      'The first prisoner announces "Red" if the sum of red hats in front is even, or "Black" if odd. Every next prisoner computes their own hat based on the remaining parity!'
     ],
     explanation:
-      'Only the PERFECT SQUARES remain open: 1, 4, 9, 16, 25, 36, 49, 64, 81, 100 (exactly 10 doors)!\n\nMathematical Proof:\nA door is toggled once for every positive factor it has. Most numbers have factors that come in distinct pairs (e.g., 12 has pairs 1×12, 2×6, 3×4 = 6 factors, an even number, leaving door 12 CLOSED).\n\nHowever, a perfect square k has a factor pair where both factors are identical (e.g., 16 has 1×16, 2×8, and 4×4). The repeated factor 4 is counted only once, giving 16 an ODD number of divisors (1, 2, 4, 8, 16 = 5 factors). Because it is toggled an odd number of times, it finishes OPEN!',
+      'The back prisoner sacrifices (50% chance of survival) by communicating the parity (even/odd) of Red hats ahead. Every subsequent prisoner counts the red hats ahead and remembers the parity of hats already called behind them. Their own hat color is simply the delta in parity!',
     interviewTip:
-      'Number theory & Factor parity: Instead of running an O(n^2) nested loop simulation, this problem tests whether you can reduce the algorithm to O(1) by recognizing factor pairing and perfect squares.'
+      'Parity bit / XOR error-detection coding: This directly mirrors parity checks and Hamming codes in distributed systems and telecommunications.'
+  },
+  {
+    id: 'camel-banana',
+    number: 21,
+    name: 'Camel & Banana',
+    category: 'logical',
+    companies: ['Amazon', 'Flipkart'],
+    difficulty: 'Hard',
+    icon: '🐪',
+    problemStatement:
+      'You have 3,000 bananas at point A and want to transport them across 1,000 km of desert to point B. A camel can carry a maximum of 1,000 bananas at once and eats 1 banana for every 1 km walked. What is the maximum number of bananas you can deliver to point B?',
+    hints: [
+      'If you try to take 1,000 bananas directly all 1,000 km, the camel will eat all 1,000 and you will have 0!',
+      'You must make intermediate checkpoints and transport bananas in relays. When transporting 3,000 bananas, the camel needs 5 trips (3 forward, 2 back) per km, consuming 5 bananas per km.',
+      'Move bananas until inventory drops to 2,000 (after 1,000/5 = 200 km). Then with 2,000 bananas, it takes 3 trips (2 forward, 1 back), consuming 3 bananas/km. After 1,000/3 ≈ 333 km (at km 533), 1,000 bananas remain. Then just 1 forward trip!'
+    ],
+    explanation:
+      'At start (3000 bananas): 5 trips per km = 5 bananas/km. At km 200, 2000 bananas remain (1000 consumed). Next phase: 2000 bananas take 3 trips = 3 bananas/km. In 333.3 km (at km 533.3), 1000 bananas remain. From km 533.3, 1 trip over remaining 466.7 km burns 467 bananas. Result: 1000 - 467 = 533 bananas delivered!',
+    interviewTip:
+      'Dynamic inventory management and piecewise linear optimization: Interviewers look for how you break a continuous problem into optimal discrete transition states.'
+  },
+  {
+    id: 'eggs-floors',
+    number: 22,
+    name: '2 Eggs & 100 Floors',
+    category: 'math',
+    companies: ['Google', 'Microsoft', 'Uber'],
+    difficulty: 'Hard',
+    icon: '🥚',
+    problemStatement:
+      'You are given 2 identical eggs and access to a 100-story building. An egg may break on any floor or survive even a drop from the 100th floor. If an egg survives, it can be dropped again. If it breaks, it is destroyed. What is the minimum number of drops needed in the worst case to determine the critical threshold floor?',
+    hints: [
+      'If you drop every 10 floors (10, 20, 30...) and Egg 1 breaks at 100, you need 10 + 9 = 19 drops worst case.',
+      'To keep the worst-case drop count constant, each successive step for Egg 1 should decrease by 1 to offset the extra drop used.',
+      'Set up the equation: x + (x - 1) + (x - 2) + ... + 1 >= 100. The sum of first x integers is x(x + 1)/2 >= 100. Solve for x!'
+    ],
+    explanation:
+      'Solving x(x + 1)/2 >= 100 gives x = 14 (14 * 15 / 2 = 105). Drop Egg 1 from floors: 14, 27 (14+13), 39 (27+12), 50 (39+11), 60, 69, 77, 84, 90, 95, 99, 100. If it breaks at floor 14, test 1 to 13 linearly with Egg 2 (max 1 + 13 = 14 drops). At every stage, total worst-case drops is exactly 14!',
+    interviewTip:
+      'Dynamic Programming & Triangular Numbers: This is a classic interview problem testing minimax strategy and balancing search tree branching.'
+  },
+  {
+    id: 'poison-rat',
+    number: 23,
+    name: 'Poison & Rat (Binary Bottles)',
+    category: 'math',
+    companies: ['Amazon', 'Goldman Sachs', 'Meta'],
+    difficulty: 'Hard',
+    icon: '🧪',
+    problemStatement:
+      'You have 8 bottles of expensive wine, exactly one of which is poisoned with a tasteless, odorless lethal toxin. You have 3 laboratory test rats. A rat dies within 24 hours if it drinks even a drop of the poisoned wine. How can you identify the exact poisoned bottle in a single 24-hour testing cycle?',
+    hints: [
+      'Notice that 2^3 = 8. Think in binary base 2!',
+      'Number the bottles 0 to 7 (or 000 to 111 in 3-bit binary).',
+      'Assign Rat 0 to the least significant bit, Rat 1 to bit 1, Rat 2 to bit 2. Rat i drinks from all bottles whose binary representation has a 1 in position i!'
+    ],
+    explanation:
+      'Bottles: 0 (000), 1 (001), 2 (010), 3 (011), 4 (100), 5 (101), 6 (110), 7 (111). Rat 0 drinks from {1, 3, 5, 7}. Rat 1 drinks from {2, 3, 6, 7}. Rat 2 drinks from {4, 5, 6, 7}. If Rats 0 and 2 die, the poison bottle is binary 101 = Bottle 5! This scales to 1,000 bottles with ceil(log2(1000)) = 10 rats.',
+    interviewTip:
+      'Information theory & binary encoding: Each rat represents 1 bit of information (Alive = 0, Dead = 1). With N rats, you can distinguish 2^N possible outcomes.'
+  },
+  {
+    id: 'balls-lines',
+    number: 24,
+    name: '10 Balls in 5 Lines',
+    category: 'arrangement',
+    companies: ['Publicis Sapient', 'Deloitte', 'Cognizant'],
+    difficulty: 'Hard',
+    icon: '⚪',
+    problemStatement:
+      'You are given 10 identical balls. How can you arrange all 10 balls into 5 straight lines such that each line contains exactly 4 balls?',
+    hints: [
+      '5 lines with 4 balls each would normally require 5 × 4 = 20 balls if they didn\'t intersect.',
+      'Since you only have 10 balls, each ball must belong to multiple lines simultaneously (20 / 10 = 2 lines per ball).',
+      'What symmetrical 5-pointed geometric figure has 5 straight intersecting lines and 10 vertex/intersection points? A 5-pointed star (Pentagram)!'
+    ],
+    explanation:
+      'Draw a standard 5-pointed star (pentagram). A pentagram consists of 5 continuous straight lines. It has 5 outer vertex points and 5 inner intersection points, making 10 vertices in total. Along each of the 5 straight lines, there are exactly 4 points (2 outer tips + 2 inner intersections)!',
+    interviewTip:
+      'Projective geometry & duality: This tests your ability to translate intersection constraints (incidence matrices) into geometric graph topologies.'
+  },
+  {
+    id: 'balance-scale',
+    number: 25,
+    name: 'Counterfeit Coin & Balance Scale',
+    category: 'math',
+    companies: ['Goldman Sachs', 'Microsoft', 'Palantir'],
+    difficulty: 'Hard',
+    icon: '⚖️',
+    problemStatement:
+      'You are given 9 coins that look identical, but exactly one is counterfeit and is slightly HEAVIER than the other 8 genuine coins of equal weight. You have a two-pan balance scale with no weights. What is the minimum number of weighings required to guarantee finding the counterfeit coin?',
+    hints: [
+      'A balance scale has 3 possible outcomes for each weighing: Left pan tilts down, Right pan tilts down, or Both pans stay balanced.',
+      'Because each weighing yields 3 outcomes, each weighing can divide the search space by a factor of 3 (base 3 / ternary search).',
+      'Split the 9 coins into 3 groups of 3 coins: A = {1, 2, 3}, B = {4, 5, 6}, C = {7, 8, 9}. Weigh A against B!'
+    ],
+    explanation:
+      'Exactly 2 weighings are guaranteed!\n\nWeighing 1: Weigh {1, 2, 3} vs {4, 5, 6}.\n• If Left tilts down, fake coin is in {1, 2, 3}.\n• If Right tilts down, fake coin is in {4, 5, 6}.\n• If Balanced, fake coin is in {7, 8, 9}.\n\nWeighing 2: Take the 3 suspect coins (say {1, 2, 3}). Weigh Coin 1 vs Coin 2.\n• If Left tilts down, Coin 1 is fake.\n• If Right tilts down, Coin 2 is fake.\n• If Balanced, Coin 3 is fake!\n\nIn information theory: 3^k >= N. With k = 2 weighings, 3^2 = 9 outcomes, which matches 9 coins perfectly.',
+    interviewTip:
+      'Ternary Search & Decision Trees: Rather than binary splitting (halving), interviewers expect you to realize a pan scale has 3 states (<, =, >), making ternary division optimal.'
   }
 ];

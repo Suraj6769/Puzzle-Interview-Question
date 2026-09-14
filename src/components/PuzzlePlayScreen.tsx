@@ -203,8 +203,9 @@ export const PuzzlePlayScreen: React.FC<Props> = ({
       />
 
       {/* Top Header Bar */}
-      <header className="sticky top-0 z-40 bg-slate-900/50 backdrop-blur-md border-b border-slate-800 px-4 sm:px-6 py-3">
-        <div className="max-w-6xl mx-auto flex items-center justify-between">
+      <header className="pt-safe sticky top-0 z-40 bg-slate-900/90 backdrop-blur-xl border-b border-slate-800 px-3 sm:px-6 pb-2.5 sm:pb-3 w-full max-w-full">
+        {/* Desktop Header Layout */}
+        <div className="hidden md:flex max-w-6xl mx-auto items-center justify-between">
           <div className="flex items-center gap-4">
             <button
               onClick={onBack}
@@ -216,7 +217,7 @@ export const PuzzlePlayScreen: React.FC<Props> = ({
 
             <div>
               <div className="flex items-center gap-2.5">
-                <span className="text-[10px] font-bold text-indigo-400 uppercase tracking-widest">
+                <span className="text-[10px] font-bold text-indigo-400 uppercase tracking-widest font-mono">
                   Puzzle {puzzle.number < 10 ? `0${puzzle.number}` : puzzle.number}
                 </span>
                 <span className="text-slate-600">•</span>
@@ -320,92 +321,177 @@ export const PuzzlePlayScreen: React.FC<Props> = ({
             </div>
           </div>
         </div>
+
+        {/* Mobile Header Layout */}
+        <div className="flex md:hidden flex-col gap-2 w-full max-w-full">
+          {/* Top Bar: Back | Title & # | Timer | Stars | Mute */}
+          <div className="flex items-center justify-between gap-2 w-full">
+            <div className="flex items-center gap-2 overflow-hidden flex-1 min-w-0">
+              <button
+                onClick={onBack}
+                className="p-1.5 rounded-lg bg-slate-800/80 hover:bg-slate-700 text-slate-300 border border-slate-700/80 shrink-0 transition active:scale-95"
+                title="Back to Map"
+              >
+                <ArrowLeft className="w-4 h-4" />
+              </button>
+
+              <div className="flex items-center gap-1.5 overflow-hidden">
+                <span className="text-[10px] font-bold text-indigo-400 font-mono shrink-0">
+                  #{puzzle.number < 10 ? `0${puzzle.number}` : puzzle.number}
+                </span>
+                <h2 className="text-xs font-bold text-white tracking-tight truncate">
+                  {puzzle.name || puzzle.title}
+                </h2>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-1.5 shrink-0">
+              {/* Timer Pill */}
+              <div className="flex items-center space-x-1 bg-slate-800/80 px-2 py-1 rounded-full border border-slate-700 text-[11px] font-mono text-slate-300">
+                <Clock className="w-3 h-3 text-indigo-400" />
+                <span>{formatTimer(timerSeconds)}</span>
+              </div>
+
+              {/* Stars */}
+              <div className="flex items-center space-x-0.5 bg-slate-800/80 px-1.5 py-1 rounded-full border border-slate-700">
+                {[1, 2, 3].map(s => {
+                  const isStar = (progress?.starsEarned ?? progress?.stars ?? 0) >= s;
+                  return (
+                    <Star
+                      key={s}
+                      className={`w-2.5 h-2.5 ${
+                        isStar ? 'fill-amber-400 text-amber-400' : 'text-slate-700'
+                      }`}
+                    />
+                  );
+                })}
+              </div>
+
+              {/* Mute Button */}
+              <button
+                onClick={handleToggleMute}
+                className="p-1.5 rounded-full bg-slate-800/80 border border-slate-700 text-slate-400 hover:text-white transition"
+              >
+                {isMuted ? <VolumeX className="w-3 h-3 text-rose-400" /> : <Volume2 className="w-3 h-3 text-indigo-400" />}
+              </button>
+            </div>
+          </div>
+
+          {/* Sub Bar: Difficulty & Category & Companies */}
+          <div className="flex items-center justify-between gap-2 text-[10px] text-slate-400 pt-1 border-t border-slate-800/60">
+            <div className="flex items-center gap-1.5 shrink-0">
+              <span
+                className={`font-bold uppercase tracking-wider px-1.5 py-0.2 rounded text-[9px] ${
+                  puzzle.difficulty === 'Easy'
+                    ? 'bg-green-500/20 text-green-400 border border-green-500/30'
+                    : puzzle.difficulty === 'Medium'
+                    ? 'bg-yellow-500/20 text-yellow-400 border border-yellow-500/30'
+                    : 'bg-red-500/20 text-red-400 border border-red-500/30'
+                }`}
+              >
+                {puzzle.difficulty}
+              </span>
+              <span className="uppercase text-[9px] font-semibold text-slate-400 px-1.5 py-0.2 bg-slate-800/80 rounded border border-slate-700/60">
+                {puzzle.category}
+              </span>
+            </div>
+
+            <span className="truncate text-slate-400 font-medium text-right text-[10px] max-w-[180px]">
+              {puzzle.companies.slice(0, 2).join(', ')}
+            </span>
+          </div>
+        </div>
       </header>
 
       {/* Main Content Area */}
-      <main className="flex-1 max-w-6xl w-full mx-auto p-4 sm:p-6 flex flex-col gap-6 relative z-10">
+      <main className="flex-1 max-w-6xl w-full mx-auto p-3.5 sm:p-6 flex flex-col gap-4 sm:gap-6 relative z-10 pb-20 md:pb-6">
         {/* Puzzle Problem Statement Card */}
-        <div className="bg-slate-900/60 border border-slate-800 rounded-2xl p-5 sm:p-6 shadow-sm">
-          <div className="flex items-center justify-between mb-2">
+        <div className="bg-slate-900/60 border border-slate-800 rounded-2xl p-4 sm:p-6 shadow-sm">
+          <div className="flex flex-col xs:flex-row xs:items-center justify-between gap-1.5 mb-2.5">
             <span className="text-[10px] font-bold text-indigo-400 uppercase tracking-widest">
               Interview Scenario & Rules
             </span>
-            <div className="flex gap-1.5">
+            <div className="flex flex-wrap gap-1">
               {(puzzle.tags || puzzle.companies.slice(0, 2)).map(t => (
                 <span
                   key={t}
-                  className="text-[10px] font-mono text-slate-400 bg-slate-800/80 px-2 py-0.5 rounded border border-slate-700/50"
+                  className="text-[9px] sm:text-[10px] font-mono text-slate-400 bg-slate-800/80 px-2 py-0.5 rounded border border-slate-700/50"
                 >
                   #{t}
                 </span>
               ))}
             </div>
           </div>
-          <p className="text-sm text-slate-300 leading-relaxed font-sans">
+          <p className="text-xs sm:text-sm text-slate-300 leading-relaxed font-sans">
             {puzzle.problemStatement || puzzle.statement}
           </p>
         </div>
 
         {/* Navigation Tabs */}
-        <div className="flex items-center gap-2 border-b border-slate-800/80 pb-2 overflow-x-auto scrollbar-none">
+        <div className="grid grid-cols-4 gap-1 sm:flex sm:items-center sm:gap-2 border-b border-slate-800/80 pb-2 overflow-x-auto scrollbar-none w-full max-w-full">
           <button
             onClick={() => handleSwitchTab('demo')}
-            className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold transition whitespace-nowrap ${
+            className={`flex items-center justify-center gap-1.5 px-2 sm:px-4 py-2 sm:py-2.5 rounded-xl text-[11px] sm:text-xs font-bold transition whitespace-nowrap ${
               activeTab === 'demo'
                 ? themeConfig.activeTabClass
                 : 'text-slate-400 hover:text-white hover:bg-slate-800/50'
             }`}
           >
-            <Sparkles className="w-3.5 h-3.5" />
-            Interactive Simulation
+            <Sparkles className="w-3.5 h-3.5 shrink-0" />
+            <span className="hidden sm:inline">Interactive Simulation</span>
+            <span className="sm:hidden">Sim</span>
           </button>
 
           <button
             onClick={() => handleSwitchTab('hints')}
-            className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold transition relative whitespace-nowrap ${
+            className={`flex items-center justify-center gap-1.5 px-2 sm:px-4 py-2 sm:py-2.5 rounded-xl text-[11px] sm:text-xs font-bold transition relative whitespace-nowrap ${
               activeTab === 'hints'
                 ? themeConfig.activeTabClass
                 : 'text-slate-400 hover:text-white hover:bg-slate-800/50'
             }`}
           >
-            <Lightbulb className="w-3.5 h-3.5" />
-            Progressive Hints ({revealedHints.length}/{puzzle.hints.length})
+            <Lightbulb className="w-3.5 h-3.5 shrink-0" />
+            <span className="hidden sm:inline">Progressive Hints ({revealedHints.length}/{puzzle.hints.length})</span>
+            <span className="sm:hidden">Hints ({revealedHints.length})</span>
           </button>
 
           <button
             onClick={() => handleSwitchTab('solution')}
-            className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold transition whitespace-nowrap ${
+            className={`flex items-center justify-center gap-1.5 px-2 sm:px-4 py-2 sm:py-2.5 rounded-xl text-[11px] sm:text-xs font-bold transition whitespace-nowrap ${
               activeTab === 'solution'
                 ? themeConfig.activeTabClass
                 : 'text-slate-400 hover:text-white hover:bg-slate-800/50'
             }`}
           >
-            <BookOpen className="w-3.5 h-3.5" />
-            Interview Solution & Breakdown
+            <BookOpen className="w-3.5 h-3.5 shrink-0" />
+            <span className="hidden sm:inline">Interview Solution & Breakdown</span>
+            <span className="sm:hidden">Solution</span>
           </button>
 
           <button
             onClick={() => handleSwitchTab('code')}
-            className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold transition whitespace-nowrap ${
+            className={`flex items-center justify-center gap-1.5 px-2 sm:px-4 py-2 sm:py-2.5 rounded-xl text-[11px] sm:text-xs font-bold transition whitespace-nowrap ${
               activeTab === 'code'
                 ? themeConfig.activeTabClass
                 : 'text-slate-400 hover:text-white hover:bg-slate-800/50'
             }`}
           >
-            <Zap className="w-3.5 h-3.5" />
-            Algorithmic Insight
+            <Zap className="w-3.5 h-3.5 shrink-0" />
+            <span className="hidden sm:inline">Algorithmic Insight</span>
+            <span className="sm:hidden">Insight</span>
           </button>
         </div>
 
         {/* Tab 1: Interactive Sandbox */}
         {activeTab === 'demo' && (
-          <div className="w-full bg-slate-900 border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-2xl relative overflow-hidden">
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(79,70,229,0.05)_0%,transparent_70%)] pointer-events-none rounded-3xl" />
-            <div className="relative z-10">
+          <div className="w-full bg-slate-900 border border-slate-800 rounded-2xl sm:rounded-3xl p-3.5 sm:p-6 md:p-8 shadow-2xl relative overflow-hidden">
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(79,70,229,0.05)_0%,transparent_70%)] pointer-events-none rounded-2xl sm:rounded-3xl" />
+            <div className="relative z-10 w-full max-w-full overflow-x-auto">
               {renderDemo()}
             </div>
           </div>
         )}
+
 
         {/* Tab 2: Progressive Hints */}
         {activeTab === 'hints' && (
@@ -508,8 +594,13 @@ export const PuzzlePlayScreen: React.FC<Props> = ({
       {showSuccessModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm animate-in fade-in">
           <div className="bg-slate-900 border border-slate-700 max-w-md w-full rounded-3xl p-6 shadow-2xl flex flex-col items-center text-center animate-in zoom-in-95 duration-200">
-            <div className="w-16 h-16 rounded-2xl bg-indigo-950/80 border border-indigo-500/40 flex items-center justify-center text-3xl mb-4 shadow-lg shadow-indigo-500/20">
-              🏆
+            <div className="relative mb-4 group">
+              <div className="absolute -inset-2 bg-gradient-to-r from-amber-500/30 to-yellow-500/20 rounded-2xl blur-md opacity-80" />
+              <img
+                src="/icon.png"
+                alt="Interview Puzzles"
+                className="relative w-20 h-20 rounded-2xl shadow-xl border border-amber-400/40 object-cover"
+              />
             </div>
 
             <h3 className="text-xl font-bold text-white">Puzzle Solved!</h3>

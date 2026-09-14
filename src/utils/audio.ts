@@ -213,6 +213,64 @@ class SoundEffects {
     osc.start();
     osc.stop(this.ctx.currentTime + 0.12);
   }
+
+  public playLogin() {
+    if (this.muted) return;
+    this.initCtx();
+    if (!this.ctx) return;
+
+    // Futuristic synth chime / login chord: C5 -> G5 -> C6 -> E6
+    const chord = [523.25, 659.25, 783.99, 1046.5];
+    chord.forEach((freq, idx) => {
+      if (!this.ctx) return;
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+
+      const startTime = this.ctx.currentTime + idx * 0.05;
+      const duration = 0.35;
+
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(freq, startTime);
+
+      gain.gain.setValueAtTime(0.12, startTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, startTime + duration);
+
+      osc.connect(gain);
+      gain.connect(this.ctx.destination);
+
+      osc.start(startTime);
+      osc.stop(startTime + duration);
+    });
+  }
+
+  public playLogout() {
+    if (this.muted) return;
+    this.initCtx();
+    if (!this.ctx) return;
+
+    // Descending power-down chime
+    const notes = [659.25, 523.25, 392.0];
+    notes.forEach((freq, idx) => {
+      if (!this.ctx) return;
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+
+      const startTime = this.ctx.currentTime + idx * 0.07;
+      const duration = 0.25;
+
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(freq, startTime);
+
+      gain.gain.setValueAtTime(0.09, startTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, startTime + duration);
+
+      osc.connect(gain);
+      gain.connect(this.ctx.destination);
+
+      osc.start(startTime);
+      osc.stop(startTime + duration);
+    });
+  }
 }
 
 export const sound = new SoundEffects();

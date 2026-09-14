@@ -1,0 +1,55 @@
+{
+  "name": "PuzzleMaster Interview: Technical Puzzles",
+  "short_name": "PuzzleMaster",
+  "description": "Master 25 FAANG & Wall Street Technical Interview Puzzles with Interactive Simulations.",
+  "start_url": "/",
+  "id": "/",
+  "display": "standalone",
+  "background_color": "#020617",
+  "theme_color": "#6366f1",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/icon.svg",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ],
+  "categories": ["education", "games", "developer-tools"],
+  "shortcuts": [
+    {
+      "name": "Easy Fundamentals",
+      "url": "/#easy",
+      "description": "Start with Levels 1-5"
+    },
+    {
+      "name": "Medium Core",
+      "url": "/#medium",
+      "description": "FAANG Core Questions 6-19"
+    },
+    {
+      "name": "Hard Challenges",
+      "url": "/#hard",
+      "description": "Staff/Senior Challenges 20-25"
+    }
+  ]
+}

@@ -6,14 +6,13 @@
 import React, { useState, useEffect } from 'react';
 import { LevelMap } from './components/LevelMap';
 import { PuzzlePlayScreen } from './components/PuzzlePlayScreen';
+import { LoginPage } from './components/LoginPage';
 import { PUZZLES } from './data/puzzles';
-import { PuzzleMeta, PuzzleProgress } from './types';
+import { PuzzleMeta, PuzzleProgress, UserProfile } from './types';
 import { ThemeId, THEMES } from './utils/theme';
 import { sound } from './utils/audio';
+import { authStorage } from './utils/authStorage';
 
-const STORAGE_KEY_PROGRESS = 'puzzlemaster_progress_v1';
-const STORAGE_KEY_STREAK = 'puzzlemaster_streak_v1';
-const STORAGE_KEY_LAST_LOGIN = 'puzzlemaster_last_login_v1';
 const STORAGE_KEY_THEME = 'puzzlemaster_theme_v1';
 
 export default function App() {
@@ -28,23 +27,32 @@ export default function App() {
     }
   });
 
+  const [currentUser, setCurrentUser] = useState<UserProfile | null>(() => {
+    return authStorage.getCurrentUser();
+  });
+
   const [progress, setProgress] = useState<Record<string, PuzzleProgress>>(() => {
-    try {
-      const saved = localStorage.getItem(STORAGE_KEY_PROGRESS);
-      return saved ? JSON.parse(saved) : {};
-    } catch {
-      return {};
-    }
+    const user = authStorage.getCurrentUser();
+    return user ? authStorage.getUserProgress(user.id) : {};
   });
 
   const [streak, setStreak] = useState<number>(() => {
-    try {
-      const saved = localStorage.getItem(STORAGE_KEY_STREAK);
-      return saved ? parseInt(saved, 10) : 1;
-    } catch {
-      return 1;
-    }
+    const user = authStorage.getCurrentUser();
+    return user ? authStorage.getUserStreak(user.id) : 1;
   });
+
+  // Whenever currentUser changes, dynamically load that user's isolated progress & streak
+  useEffect(() => {
+    if (currentUser) {
+      const userProg = authStorage.getUserProgress(currentUser.id);
+      setProgress(userProg);
+      const userStreak = authStorage.checkAndUpdateStreak(currentUser.id);
+      setStreak(userStreak);
+    } else {
+      setProgress({});
+      setStreak(1);
+    }
+  }, [currentUser?.id]);
 
   const handleSetTheme = (newTheme: ThemeId) => {
     sound.playThemeChange();
@@ -56,73 +64,48 @@ export default function App() {
     }
   };
 
-  // Calculate and update daily streak
-  useEffect(() => {
-    try {
-      const lastLogin = localStorage.getItem(STORAGE_KEY_LAST_LOGIN);
-      const today = new Date().toDateString();
+  const handleLogin = (user: UserProfile) => {
+    authStorage.setCurrentUser(user);
+    setCurrentUser(user);
+    const userProg = authStorage.getUserProgress(user.id);
+    setProgress(userProg);
+    const userStreak = authStorage.checkAndUpdateStreak(user.id);
+    setStreak(userStreak);
+  };
 
-      if (lastLogin !== today) {
-        if (lastLogin) {
-          const lastDate = new Date(lastLogin);
-          const diffDays = Math.round(
-            (new Date(today).getTime() - lastDate.getTime()) / (1000 * 60 * 60 * 24)
-          );
+  const handleLogout = () => {
+    sound.playLogout();
+    authStorage.logout();
+    setCurrentUser(null);
+    setSelectedPuzzle(null);
+    setProgress({});
+    setStreak(1);
+  };
 
-          if (diffDays === 1) {
-            const nextStreak = streak + 1;
-            setStreak(nextStreak);
-            localStorage.setItem(STORAGE_KEY_STREAK, nextStreak.toString());
-          } else if (diffDays > 1) {
-            setStreak(1);
-            localStorage.setItem(STORAGE_KEY_STREAK, '1');
-          }
-        }
-        localStorage.setItem(STORAGE_KEY_LAST_LOGIN, today);
-      }
-    } catch {
-      // localStorage error fallback
-    }
-  }, []);
-
-  // Save progress
+  // Save progress isolated to the current user
   const handleSaveProgress = (
     puzzleId: string,
     stars: number,
     hintsUsed: number,
     moves: number
   ) => {
-    setProgress(prev => {
-      const current = prev[puzzleId];
-      const highestStars = Math.max(current?.starsEarned || 0, stars);
-      const bestMoves = current?.bestMoves ? Math.min(current.bestMoves, moves) : moves;
-
-      const updated = {
-        ...prev,
-        [puzzleId]: {
-          puzzleId,
-          solved: true,
-          starsEarned: highestStars,
-          hintsUsed: Math.max(current?.hintsUsed || 0, hintsUsed),
-          bestMoves,
-        },
-      };
-
-      try {
-        localStorage.setItem(STORAGE_KEY_PROGRESS, JSON.stringify(updated));
-      } catch (err) {
-        console.error('Failed to save progress to localStorage', err);
-      }
-
-      return updated;
-    });
+    if (!currentUser) return;
+    const updated = authStorage.saveUserProgress(
+      currentUser.id,
+      puzzleId,
+      stars,
+      hintsUsed,
+      moves
+    );
+    setProgress(updated);
   };
 
   const handleResetProgress = () => {
-    if (window.confirm('Are you sure you want to reset all your progress and stars?')) {
+    if (!currentUser) return;
+    if (window.confirm('Are you sure you want to reset all your progress and stars for this candidate profile?')) {
       sound.playReset();
+      authStorage.resetUserProgress(currentUser.id);
       setProgress({});
-      localStorage.removeItem(STORAGE_KEY_PROGRESS);
     }
   };
 
@@ -138,11 +121,22 @@ export default function App() {
 
   const themeConfig = THEMES[theme] || THEMES['cyber-indigo'];
 
+  // If user is not authenticated, display the futuristic Login Page
+  if (!currentUser) {
+    return (
+      <LoginPage
+        onLogin={handleLogin}
+        theme={theme}
+        onSetTheme={handleSetTheme}
+      />
+    );
+  }
+
   return (
     <div
-      className={`min-h-screen ${themeConfig.bgClass} font-sans text-slate-200 selection:bg-indigo-500 selection:text-white flex flex-col justify-between transition-colors duration-500`}
+      className={`min-h-screen w-full max-w-full overflow-x-hidden ${themeConfig.bgClass} font-sans text-slate-200 selection:bg-indigo-500 selection:text-white flex flex-col justify-between transition-colors duration-500`}
     >
-      <div className="flex-1 flex flex-col">
+      <div className="flex-1 flex flex-col w-full max-w-full overflow-x-hidden">
         {!selectedPuzzle ? (
           <LevelMap
             puzzles={PUZZLES}
@@ -152,6 +146,8 @@ export default function App() {
             streak={streak}
             theme={theme}
             onSetTheme={handleSetTheme}
+            currentUser={currentUser}
+            onLogout={handleLogout}
           />
         ) : (
           <PuzzlePlayScreen
@@ -166,11 +162,12 @@ export default function App() {
         )}
       </div>
 
-      {/* Sleek Interface Footer */}
-      <footer className="h-9 bg-slate-950/80 backdrop-blur-md border-t border-slate-900/80 flex items-center px-6 justify-between text-[10px] text-slate-500 font-bold uppercase tracking-widest shrink-0 z-20">
-        <span className="hidden sm:inline">Difficulty Tier: Senior Engineering & Staff FAANG</span>
-        <span>Connected to: FAANG Cloud Simulation</span>
-        <span>Active Theme: {themeConfig.name}</span>
+      {/* Sleek Interface Footer - Hidden on mobile screens */}
+      <footer className="hidden md:flex h-9 bg-slate-950/80 backdrop-blur-md border-t border-slate-900/80 items-center px-6 justify-between text-[10px] text-slate-500 font-bold uppercase tracking-widest shrink-0 z-20">
+        <span className="hidden lg:inline">Difficulty Tier: Senior Engineering & Staff FAANG</span>
+        <span>Connected: FAANG Cloud</span>
+        <span>Candidate: {currentUser.name} ({currentUser.targetCompany})</span>
+        <span>Theme: {themeConfig.name}</span>
       </footer>
     </div>
   );

@@ -37,3 +37,27 @@ export interface UserProgressState {
   streak: number;
   allUnlocked: boolean;
 }
+
+export interface UserProfile {
+  id: string;
+  name: string;
+  email: string;
+  targetCompany: string;
+  targetRole: string;
+  avatar?: string;
+  joinedDate: string;
+  isGuest?: boolean;
+}
+
+export interface UserAccount extends UserProfile {
+  password?: string;
+}
+
+export type SortOption =
+  | 'difficulty-asc'
+  | 'difficulty-desc'
+  | 'number-asc'
+  | 'stars-desc'
+  | 'name-asc';
+
+

@@ -6,3 +6,15 @@ coverage/
 *.log
 .env*
 !.env.example
+
+# IDE & Editor
+.idea/
+*.iml
+.vscode/
+
+# Android build outputs & caches
+android/.gradle/
+android/build/
+android/app/build/
+android/captures/
+.gradle/
