@@ -28,29 +28,29 @@ export const MobileNavBar: React.FC<Props> = ({
     {
       id: 'puzzles',
       label: 'Puzzles',
-      icon: <Grid className="w-5 h-5" />,
+      icon: <Grid className="w-[18px] h-[18px]" />,
       badge: `${solvedCount}/${totalPuzzles}`,
     },
     {
       id: 'tiers',
       label: 'Tiers',
-      icon: <Layers className="w-5 h-5" />,
+      icon: <Layers className="w-[18px] h-[18px]" />,
     },
     {
       id: 'stats',
       label: 'Mastery',
-      icon: <Flame className="w-5 h-5 text-orange-400" />,
+      icon: <Flame className="w-[18px] h-[18px]" />,
       badge: streak > 0 ? `🔥${streak}` : undefined,
     },
     {
       id: 'profile',
       label: 'Profile',
-      icon: <User className="w-5 h-5" />,
+      icon: <User className="w-[18px] h-[18px]" />,
     },
   ];
 
   return (
-    <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-slate-950/90 backdrop-blur-xl border-t border-slate-800/90 px-3 py-2 pb-safe shadow-2xl">
+    <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-slate-950/80 backdrop-blur-2xl border-t border-white/[0.04] px-2 py-1.5 pb-safe shadow-[0_-8px_32px_rgba(0,0,0,0.4)]">
       <div className="flex items-center justify-around max-w-md mx-auto">
         {tabs.map(tab => {
           const isActive = activeTab === tab.id;
@@ -61,22 +61,26 @@ export const MobileNavBar: React.FC<Props> = ({
                 sound.playClick();
                 onSelectTab(tab.id);
               }}
-              className={`flex flex-col items-center justify-center flex-1 py-1 px-2 rounded-xl transition-all relative ${
+              className={`flex flex-col items-center justify-center flex-1 py-1.5 px-1 rounded-2xl transition-all duration-300 relative ${
                 isActive
                   ? 'text-white'
-                  : 'text-slate-400 hover:text-slate-200'
+                  : 'text-slate-500 hover:text-slate-300'
               }`}
             >
-              {/* Active Indicator Glow Pill */}
+              {/* Active Background Pill */}
               {isActive && (
                 <div
-                  className={`absolute -top-1.5 w-8 h-1 rounded-full bg-gradient-to-r ${themeConfig.gradient}`}
+                  className="absolute inset-x-2 inset-y-0 rounded-2xl transition-all duration-300"
+                  style={{
+                    background: `rgba(${themeConfig.accentRgb}, 0.1)`,
+                    border: `1px solid rgba(${themeConfig.accentRgb}, 0.15)`,
+                  }}
                 />
               )}
 
-              <div className="relative">
+              <div className="relative z-10">
                 <div
-                  className={`transition-transform duration-200 ${
+                  className={`transition-all duration-300 ${
                     isActive ? 'scale-110 ' + themeConfig.primaryColor : ''
                   }`}
                 >
@@ -84,14 +88,14 @@ export const MobileNavBar: React.FC<Props> = ({
                 </div>
 
                 {tab.badge && !isActive && (
-                  <span className="absolute -top-1.5 -right-3 text-[9px] font-mono px-1 py-0.2 rounded-full bg-slate-800 text-slate-300 font-bold border border-slate-700">
+                  <span className="absolute -top-1.5 -right-3.5 text-[8px] font-mono px-1 py-0.5 rounded-full bg-white/[0.06] text-slate-400 font-bold border border-white/[0.06]">
                     {tab.badge}
                   </span>
                 )}
               </div>
 
               <span
-                className={`text-[10px] font-bold mt-1 tracking-tight ${
+                className={`relative z-10 text-[10px] font-bold mt-0.5 tracking-tight transition-all duration-300 ${
                   isActive ? themeConfig.primaryColor + ' font-extrabold' : ''
                 }`}
               >

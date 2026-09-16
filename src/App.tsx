@@ -162,8 +162,13 @@ export default function App() {
         )}
       </div>
 
-      {/* Sleek Interface Footer - Hidden on mobile screens */}
-      <footer className="hidden md:flex h-9 bg-slate-950/80 backdrop-blur-md border-t border-slate-900/80 items-center px-6 justify-between text-[10px] text-slate-500 font-bold uppercase tracking-widest shrink-0 z-20">
+      {/* Premium Interface Footer - Hidden on mobile screens */}
+      <footer className="hidden md:flex h-9 bg-slate-950/60 backdrop-blur-md border-t border-white/[0.03] items-center px-6 justify-between text-[10px] text-slate-600 font-bold uppercase tracking-widest shrink-0 z-20 relative">
+        {/* Gradient top accent */}
+        <div
+          className="absolute top-0 left-0 right-0 h-[1px]"
+          style={{ background: themeConfig.headerAccent }}
+        />
         <span className="hidden lg:inline">Difficulty Tier: Senior Engineering & Staff FAANG</span>
         <span>Connected: FAANG Cloud</span>
         <span>Candidate: {currentUser.name} ({currentUser.targetCompany})</span>
