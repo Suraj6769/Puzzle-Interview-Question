@@ -515,35 +515,3 @@ export const PUZZLES: PuzzleMeta[] = [
       'Ternary Search & Decision Trees: Rather than binary splitting (halving), interviewers expect you to realize a pan scale has 3 states (<, =, >), making ternary division optimal.'
   }
 ];
-
-import type { Puzzle, CategoryName, CompanyTag } from '../types';
-
-const categoryMap: Record<string, CategoryName> = {
-  logical: 'Logical',
-  math: 'Math',
-  arrangement: 'Arrangement',
-  spatial: 'Spatial',
-};
-
-const companyMap: Record<string, CompanyTag> = {
-  Google: 'Google', Meta: 'Meta', Amazon: 'Amazon', Apple: 'Apple',
-  Microsoft: 'Microsoft', Goldman: 'Goldman', 'Goldman Sachs': 'Goldman',
-};
-
-export const puzzles: Puzzle[] = PUZZLES.map((puzzle, index) => ({
-  id: index + 1,
-  title: puzzle.name,
-  category: categoryMap[puzzle.category],
-  difficulty: puzzle.difficulty,
-  tier: index < 8 ? 1 : index < 17 ? 2 : 3,
-  companies: puzzle.companies.map(company => companyMap[company] || 'All'),
-  data: { type: 'choice', question: puzzle.problemStatement, options: ['I understand the puzzle', 'Show me the solution'], correct: 0 },
-  hints: [puzzle.hints[0], puzzle.hints[1], puzzle.hints[2]],
-  solution: puzzle.explanation,
-  algorithm: puzzle.interviewTip,
-  complexity: 'See the algorithmic insight for this puzzle.',
-  takeaway: puzzle.interviewTip,
-  minMoves: 1,
-}));
-
-export const getPuzzle = (id: number) => puzzles.find(puzzle => puzzle.id === id);

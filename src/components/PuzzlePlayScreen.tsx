@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import confetti from 'canvas-confetti';
 import {
   ArrowLeft,
@@ -23,6 +23,7 @@ import {
 import { PuzzleMeta, PuzzleProgress } from '../types';
 import { sound } from '../utils/audio';
 import { ThemeId, THEMES } from '../utils/theme';
+import CompanyLogo from './CompanyLogo';
 
 // Demos
 import { WaterJugDemo } from './demos/WaterJugDemo';
@@ -61,6 +62,29 @@ interface Props {
   onSetTheme?: (theme: ThemeId) => void;
 }
 
+function CompanyBadge({ company }: { company: string; key?: React.Key }) {
+  return <CompanyLogo company={company} className="company-badge" />;
+}
+
+function PuzzleArtwork({ puzzle }: { puzzle: PuzzleMeta }) {
+  const art = puzzle.id === 'heaven-hell'
+    ? { icon: '🚪', secondary: '🚪', label: 'Choose your path' }
+    : puzzle.id === 'mislabeled-jars'
+    ? { icon: '🏺', secondary: '🍊', label: 'Decode the labels' }
+    : puzzle.id === 'water-jug'
+    ? { icon: '🫗', secondary: '💧', label: 'Measure exactly' }
+    : { icon: puzzle.icon || '✦', secondary: '✧', label: puzzle.category === 'math' ? 'Find the pattern' : 'Solve the challenge' };
+
+  return (
+    <div className="puzzle-artwork" aria-label={`${puzzle.name} illustration`}>
+      <div className="puzzle-art-glow" />
+      <span className="puzzle-art-secondary">{art.secondary}</span>
+      <span className="puzzle-art-icon">{art.icon}</span>
+      <span className="puzzle-art-label">{art.label}</span>
+    </div>
+  );
+}
+
 export const PuzzlePlayScreen: React.FC<Props> = ({
   puzzle,
   progress,
@@ -76,18 +100,47 @@ export const PuzzlePlayScreen: React.FC<Props> = ({
   const [showThemePicker, setShowThemePicker] = useState<boolean>(false);
   const [earnedStars, setEarnedStars] = useState<number>(0);
   const [sessionMoves, setSessionMoves] = useState<number>(0);
-  const [timerSeconds, setTimerSeconds] = useState<number>(0);
+  const timerStorageKey = `pm-puzzle-time-${puzzle.id}`;
+  const [timerSeconds, setTimerSeconds] = useState<number>(() => {
+    try {
+      return Number(localStorage.getItem(timerStorageKey) || 0);
+    } catch {
+      return 0;
+    }
+  });
+  const timerRef = useRef(timerSeconds);
   const [isMuted, setIsMuted] = useState<boolean>(() => sound.isMuted());
 
   const themeConfig = THEMES[theme] || THEMES['cyber-indigo'];
 
-  // Timer
+  // Keep elapsed time per puzzle so leaving the screen does not reset progress.
   useEffect(() => {
+    let savedSeconds = 0;
+    try {
+      savedSeconds = Number(localStorage.getItem(timerStorageKey) || 0);
+    } catch {
+      savedSeconds = 0;
+    }
+    timerRef.current = savedSeconds;
+    setTimerSeconds(savedSeconds);
     const timer = setInterval(() => {
-      setTimerSeconds(prev => prev + 1);
+      timerRef.current += 1;
+      setTimerSeconds(timerRef.current);
+      try {
+        localStorage.setItem(timerStorageKey, String(timerRef.current));
+      } catch {
+        // Ignore storage failures and keep the in-memory timer running.
+      }
     }, 1000);
-    return () => clearInterval(timer);
-  }, []);
+    return () => {
+      clearInterval(timer);
+      try {
+        localStorage.setItem(timerStorageKey, String(timerRef.current));
+      } catch {
+        // Ignore storage failures.
+      }
+    };
+  }, [timerStorageKey]);
 
   const formatTimer = (sec: number) => {
     const m = Math.floor(sec / 60);
@@ -202,7 +255,7 @@ export const PuzzlePlayScreen: React.FC<Props> = ({
   ];
 
   return (
-    <div className={`flex flex-col min-h-screen ${themeConfig.bgClass} text-slate-200 relative transition-colors duration-500`}>
+    <div className={`puzzle-player flex flex-col min-h-screen ${themeConfig.bgClass} text-slate-200 relative transition-colors duration-500`}>
       {/* Subtle Dynamic Radial Glow Background */}
       <div
         className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-5xl h-[400px] pointer-events-none blur-3xl opacity-25 transition-all duration-700"
@@ -222,6 +275,10 @@ export const PuzzlePlayScreen: React.FC<Props> = ({
         {/* Desktop Header Layout */}
         <div className="hidden md:flex max-w-6xl mx-auto items-center justify-between">
           <div className="flex items-center gap-4">
+            <div className="puzzle-brand" aria-label="PuzzleMaster Interview Edition">
+              <img src="/icon.png" alt="" />
+              <span>Puzzle<span>Master</span><small>INTERVIEW EDITION</small></span>
+            </div>
             <button
               onClick={onBack}
               className="bg-white/[0.04] hover:bg-white/[0.08] p-2 rounded-xl text-slate-400 hover:text-white transition-all duration-300 border border-white/[0.06] flex items-center gap-1.5 hover:scale-105 active:scale-95"
@@ -251,10 +308,8 @@ export const PuzzlePlayScreen: React.FC<Props> = ({
                   {puzzle.difficulty}
                 </span>
               </div>
-              <div className="flex items-center gap-2 mt-0.5 text-xs text-slate-500">
-                <span className="text-[10px] px-2 py-0.5 bg-white/[0.03] rounded-lg uppercase font-bold text-slate-400 border border-white/[0.04]">
-                  {puzzle.companies.slice(0, 3).join(', ')}
-                </span>
+              <div className="flex items-center gap-1.5 mt-1 text-xs text-slate-500">
+                {puzzle.companies.slice(0, 3).map(company => <CompanyBadge key={company} company={company} />)}
                 <span className="text-slate-700">•</span>
                 <span className="text-slate-500 uppercase text-[10px] tracking-wider font-semibold">
                   {puzzle.category}
@@ -422,15 +477,15 @@ export const PuzzlePlayScreen: React.FC<Props> = ({
               </span>
             </div>
 
-            <span className="truncate text-slate-500 font-medium text-right text-[10px] max-w-[180px]">
-              {puzzle.companies.slice(0, 2).join(', ')}
-            </span>
+            <div className="flex items-center gap-1 overflow-hidden justify-end">
+              {puzzle.companies.slice(0, 2).map(company => <CompanyBadge key={company} company={company} />)}
+            </div>
           </div>
         </div>
       </header>
 
       {/* ─── Main Content Area ─── */}
-      <main className="flex-1 max-w-6xl w-full mx-auto p-3.5 sm:p-6 flex flex-col gap-4 sm:gap-6 relative z-10 pb-20 md:pb-6">
+      <main className="flex-1 max-w-6xl w-full mx-auto p-3.5 sm:p-6 flex flex-col gap-4 sm:gap-6 relative z-10 pb-28 sm:pb-28 md:pb-8">
         {/* Puzzle Problem Statement Card */}
         <div className="glass-panel-premium rounded-2xl p-4 sm:p-6 relative overflow-hidden animate-slide-up">
           {/* Top Accent */}
@@ -438,24 +493,26 @@ export const PuzzlePlayScreen: React.FC<Props> = ({
             className="absolute top-0 left-0 right-0 h-[2px]"
             style={{ background: themeConfig.headerAccent }}
           />
-          <div className="flex flex-col xs:flex-row xs:items-center justify-between gap-1.5 mb-2.5">
-            <span className={`text-[10px] font-bold ${themeConfig.primaryColor} uppercase tracking-widest`}>
-              Interview Scenario & Rules
-            </span>
-            <div className="flex flex-wrap gap-1">
-              {(puzzle.tags || puzzle.companies.slice(0, 2)).map(t => (
-                <span
-                  key={t}
-                  className="text-[9px] sm:text-[10px] font-mono text-slate-500 bg-white/[0.03] px-2 py-0.5 rounded-lg border border-white/[0.04]"
-                >
-                  #{t}
+          <div className="puzzle-problem-layout">
+            <PuzzleArtwork puzzle={puzzle} />
+            <div className="puzzle-problem-copy">
+              <div className="flex flex-col xs:flex-row xs:items-center justify-between gap-1.5 mb-2.5">
+                <span className={`text-[10px] font-bold ${themeConfig.primaryColor} uppercase tracking-widest`}>
+                  Interview Scenario & Rules
                 </span>
-              ))}
+                <div className="flex flex-wrap gap-1">
+                  {(puzzle.tags || puzzle.companies.slice(0, 2)).map(t => (
+                    <span key={t} className="text-[9px] sm:text-[10px] font-mono text-slate-500 bg-white/[0.03] px-2 py-0.5 rounded-lg border border-white/[0.04]">
+                      #{t}
+                    </span>
+                  ))}
+                </div>
+              </div>
+              <p className="text-xs sm:text-sm text-slate-300 leading-relaxed font-sans">
+                {puzzle.problemStatement || puzzle.statement}
+              </p>
             </div>
           </div>
-          <p className="text-xs sm:text-sm text-slate-300 leading-relaxed font-sans">
-            {puzzle.problemStatement || puzzle.statement}
-          </p>
         </div>
 
         {/* ─── Navigation Tabs ─── */}

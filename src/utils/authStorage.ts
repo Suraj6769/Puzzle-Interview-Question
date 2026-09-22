@@ -318,6 +318,7 @@ class AuthStorageService {
       [puzzleId]: {
         puzzleId,
         solved: true,
+        stars: highestStars,
         starsEarned: highestStars,
         hintsUsed: Math.max(existing?.hintsUsed || 0, hintsUsed),
         bestMoves,

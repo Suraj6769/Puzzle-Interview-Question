@@ -1,4 +1,4 @@
-export type Category = 'logical' | 'math' | 'arrangement' | 'spatial';
+export type Category = 'logical' | 'math' | 'arrangement' | 'spatial' | 'Logical' | 'Math' | 'Arrangement' | 'Spatial';
 
 export type Difficulty = 'Easy' | 'Medium' | 'Hard';
 
@@ -47,6 +47,8 @@ export interface UserProfile {
   avatar?: string;
   joinedDate: string;
   isGuest?: boolean;
+  company?: string;
+  role?: string;
 }
 
 export interface UserAccount extends UserProfile {
@@ -59,5 +61,45 @@ export type SortOption =
   | 'number-asc'
   | 'stars-desc'
   | 'name-asc';
+
+export type ThemeName = 'dark' | 'light';
+export type CategoryName = 'Logical' | 'Math' | 'Arrangement' | 'Spatial';
+export type CompanyTag = 'Google' | 'Meta' | 'Amazon' | 'Apple' | 'Microsoft' | 'Goldman' | 'All';
+export type PuzzleType = 'choice' | 'grid' | 'order' | 'matrix';
+
+export interface PuzzleChoiceData {
+  type: 'choice';
+  question: string;
+  context?: string;
+  options: string[];
+  correct: number;
+}
+
+export interface Puzzle {
+  id: number;
+  title: string;
+  category: CategoryName;
+  difficulty: Difficulty;
+  tier: 1 | 2 | 3;
+  companies: CompanyTag[];
+  data: PuzzleChoiceData;
+  hints: [string, string, string];
+  solution: string;
+  algorithm: string;
+  complexity: string;
+  takeaway: string;
+  minMoves: number;
+}
+
+export interface PuzzleResult {
+  puzzleId: number;
+  stars: number;
+  timeSecs: number;
+  moves: number;
+  hintsUsed: number;
+}
+
+export type Screen = 'onboarding' | 'dashboard' | 'tier-map' | 'puzzle' | 'success' | 'mastery' | 'profile';
+export type NavTab = 'puzzles' | 'tiers' | 'mastery' | 'profile';
 
 
